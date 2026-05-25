@@ -39,7 +39,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     validateSession()
       .then(({ data }) => {
-        if (!data?.auth) clearSession();
+        if (!data?.auth) {
+          clearSession();
+        } else if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
       })
       .catch(clearSession)
       .finally(() => setChecking(false));
