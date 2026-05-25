@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "description": "Portal ciudadano del IDRD — reservas de gimnasios distritales de Bogotá",
   "author": "Ciberstein",
+  "license": "ISC",
+  "type": "module",
   "homepage": "https://github.com/Ciberstein/idrd_frontend#readme",
   "repository": {
     "type": "git",
@@ -12,7 +14,6 @@
   "bugs": {
     "url": "https://github.com/Ciberstein/idrd_frontend/issues"
   },
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
