@@ -16,6 +16,12 @@
   }
 }
 
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 @keyframes toast-in {
   from {
     opacity: 0;
