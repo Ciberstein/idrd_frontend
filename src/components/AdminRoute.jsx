@@ -13,6 +13,6 @@ export default function AdminRoute({ children }) {
   }
 
   if (!user) return <Navigate to="/login" replace />;
-  if (user.authority !== 1) return <Navigate to="/home" replace />;
+  if (user.authority !== 100) return <Navigate to="/home" replace />;
   return children;
 }

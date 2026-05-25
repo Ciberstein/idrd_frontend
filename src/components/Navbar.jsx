@@ -54,7 +54,7 @@ export default function Navbar() {
               <p className="text-xs text-slate-500 truncate">{user?.email}</p>
             </div>
 
-            {user?.authority === 1 && (
+            {user?.authority === 100 && (
               <MenuItem>
                 <Link
                   to="/admin"

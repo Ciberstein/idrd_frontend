@@ -9,17 +9,20 @@ import { getUsers, updateUser } from '../api/admin';
 import { getDocTypes } from '../api/auth';
 
 const AUTHORITY_OPTIONS = [
-  { value: -1, label: 'No verificado' },
-  { value: 0, label: 'Usuario' },
-  { value: 1, label: 'Administrador' },
+  { value: -1,  label: 'Baneado' },
+  { value: 0,   label: 'No verificado' },
+  { value: 1,   label: 'Usuario' },
+  { value: 100, label: 'Administrador' },
 ];
 
 function authorityBadge(authority) {
-  if (authority === 1)
+  if (authority === 100)
     return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">Admin</span>;
-  if (authority === 0)
+  if (authority === 1)
     return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Usuario</span>;
-  return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">No verificado</span>;
+  if (authority === 0)
+    return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500">No verificado</span>;
+  return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600">Baneado</span>;
 }
 
 function fmtDate(d) {
