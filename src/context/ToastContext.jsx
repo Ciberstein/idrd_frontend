@@ -9,7 +9,7 @@ let _nextId = 0;
 function ToastItem({ toast, onDismiss }) {
   const isSuccess = toast.type === 'success';
   return (
-    <div className={`flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium min-w-72 max-w-sm pointer-events-auto animate-toast-in ${
+    <div className={`flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium w-[calc(100vw-2rem)] sm:w-auto sm:min-w-72 max-w-sm pointer-events-auto animate-toast-in ${
       isSuccess
         ? 'bg-emerald-600 text-white'
         : 'bg-red-600 text-white'
@@ -46,7 +46,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={showToast}>
       {children}
       {createPortal(
-        <div className="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[200] flex flex-col gap-2 items-stretch sm:items-end pointer-events-none">
           {toasts.map((t) => (
             <ToastItem key={t.id} toast={t} onDismiss={dismiss} />
           ))}

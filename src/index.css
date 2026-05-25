@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 @layer base {
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-slate-50 text-slate-800 antialiased;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   #root {
