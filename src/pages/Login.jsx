@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { login } from '../api/auth';
+import PasswordField from '../components/PasswordField';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -71,21 +72,13 @@ export default function Login() {
             {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700" htmlFor="password">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register('password', { required: 'La contraseña es requerida' })}
-              className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                errors.password ? 'border-red-400' : 'border-slate-200'
-              }`}
-            />
-            {errors.password && <p className="text-xs text-red-600">{errors.password.message}</p>}
-          </div>
+          <PasswordField
+            label="Contraseña"
+            id="password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            {...register('password', { required: 'La contraseña es requerida' })}
+          />
 
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>

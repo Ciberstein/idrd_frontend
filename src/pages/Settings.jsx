@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
+import PasswordField from '../components/PasswordField';
 import { DEPARTMENTS, COLOMBIA } from '../data/colombia';
 import {
   updateProfile,
@@ -403,18 +404,18 @@ function SecuritySection() {
 
   return (
     <form onSubmit={handle1(onRequestChange)} className="space-y-4">
-      <Field label="Contraseña actual" id="password" type="password" placeholder="••••••••"
+      <PasswordField label="Contraseña actual" id="password" placeholder="••••••••"
         error={err1.password?.message}
         {...reg1('password', { required: 'La contraseña actual es requerida' })}
       />
-      <Field label="Nueva contraseña" id="new_password" type="password" placeholder="Mínimo 8 caracteres"
+      <PasswordField label="Nueva contraseña" id="new_password" placeholder="Mínimo 8 caracteres"
         error={err1.new_password?.message}
         {...reg1('new_password', {
           required: 'La nueva contraseña es requerida',
           minLength: { value: 8, message: 'Mínimo 8 caracteres' },
         })}
       />
-      <Field label="Confirmar nueva contraseña" id="new_password_repeat" type="password" placeholder="••••••••"
+      <PasswordField label="Confirmar nueva contraseña" id="new_password_repeat" placeholder="••••••••"
         error={err1.new_password_repeat?.message}
         {...reg1('new_password_repeat', {
           required: 'Confirma la nueva contraseña',

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { requestRecovery, confirmRecovery } from '../api/auth';
+import PasswordField from '../components/PasswordField';
 
 function Field({ label, id, error, ...props }) {
   return (
@@ -126,10 +127,9 @@ function ResetStep({ accountId, email, onBack }) {
         {errors.code && <p className="text-xs text-red-600">{errors.code.message}</p>}
       </div>
 
-      <Field
+      <PasswordField
         label="Nueva contraseña"
         id="password"
-        type="password"
         placeholder="Mínimo 8 caracteres"
         error={errors.password?.message}
         {...register('password', {
@@ -138,10 +138,9 @@ function ResetStep({ accountId, email, onBack }) {
         })}
       />
 
-      <Field
+      <PasswordField
         label="Confirmar nueva contraseña"
         id="password_repeat"
-        type="password"
         placeholder="••••••••"
         error={errors.password_repeat?.message}
         {...register('password_repeat', {

@@ -4,6 +4,7 @@ import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { register as registerUser, getDocTypes } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import Combobox from '../components/Combobox';
+import PasswordField from '../components/PasswordField';
 
 function Field({ label, id, optional, error, ...props }) {
   return (
@@ -144,7 +145,7 @@ export default function Register() {
             })}
           />
 
-          <Field label="Contraseña" id="password" type="password" placeholder="Mínimo 8 caracteres"
+          <PasswordField label="Contraseña" id="password" placeholder="Mínimo 8 caracteres"
             error={errors.password?.message}
             {...register('password', {
               required: 'La contraseña es requerida',
@@ -152,7 +153,7 @@ export default function Register() {
             })}
           />
 
-          <Field label="Confirmar contraseña" id="password_repeat" type="password" placeholder="••••••••"
+          <PasswordField label="Confirmar contraseña" id="password_repeat" placeholder="••••••••"
             error={errors.password_repeat?.message}
             {...register('password_repeat', {
               required: 'Confirma tu contraseña',
