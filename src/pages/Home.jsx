@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Navbar from '../components/Navbar';
 import Combobox from '../components/Combobox';
-import Captcha from '../components/Captcha';
 import {
   getGimnasios,
   getAddresses,
@@ -130,7 +129,6 @@ function addOneHour(time) {
 }
 
 function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
-  const [captchaToken, setCaptchaToken] = useState('');
   const {
     register, handleSubmit, control, getValues, watch,
     formState: { errors, isSubmitting, isValid },
@@ -145,7 +143,7 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
   });
 
   return (
-    <form onSubmit={handleSubmit((data) => onSave(data, captchaToken))} className="space-y-4 pt-2">
+    <form onSubmit={handleSubmit(onSave)} className="space-y-4 pt-2">
       <Controller
         name="gimnasio_id"
         control={control}
@@ -211,14 +209,12 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
         />
       </div>
 
-      <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
-
       <div className="flex items-center justify-between pt-1">
         <button type="button" onClick={onCancel}
           className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
           Cancelar
         </button>
-        <button type="submit" disabled={isSubmitting || !isValid || !captchaToken}
+        <button type="submit" disabled={isSubmitting || !isValid}
           className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer">
           {isSubmitting ? 'Guardando…' : 'Reservar'}
         </button>
@@ -256,14 +252,14 @@ function ReservasSection({ state, dispatch }) {
     label: `${g.idrd_id} – ${g.park}`,
   }));
 
-  const handleSave = async (data, captchaToken) => {
+  const handleSave = async (data) => {
     try {
       await createReserva({
         gimnasio_id: data.gimnasio_id,
         address_id: data.address_id || null,
         reservation_date: data.reservation_date,
         start_time: data.start_time,
-      }, captchaToken);
+      });
       await refreshReservas(dispatch);
       setModalOpen(false);
       showToast('Reserva creada exitosamente');

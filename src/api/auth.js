@@ -42,8 +42,8 @@ export const setDefaultAddress = (id) =>
 export const getReservas = () =>
   api.get('/me/reservas');
 
-export const createReserva = (data, captcha_token) =>
-  api.post('/me/reservas', { ...data, captcha_token });
+export const createReserva = (data) =>
+  api.post('/me/reservas', data);
 
 export const updateReserva = (id, data) =>
   api.patch(`/me/reservas/${id}`, data);
