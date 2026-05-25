@@ -104,13 +104,13 @@ function fmtTime(t) {
 
 function TimeField({ label, id, registration, error, readOnly, ...props }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 min-w-0">
       <label className="text-sm font-medium text-slate-700" htmlFor={id}>{label}</label>
       <input
         id={id}
         type="time"
         readOnly={readOnly}
-        className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
+        className={`w-full min-w-0 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
           error ? 'border-red-400' : 'border-slate-200'
         } ${readOnly ? 'bg-slate-50 text-slate-500 cursor-default' : 'text-slate-900'}`}
         {...registration}
@@ -183,12 +183,12 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="space-y-1">
+        <div className="space-y-1 min-w-0">
           <label className="text-sm font-medium text-slate-700" htmlFor="reservation_date">Fecha</label>
           <input
             id="reservation_date"
             type="date"
-            className={`w-full px-3 py-2 rounded-lg border text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
+            className={`w-full min-w-0 px-3 py-2 rounded-lg border text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
               errors.reservation_date ? 'border-red-400' : 'border-slate-200'
             }`}
             {...register('reservation_date', { required: 'Requerido' })}
