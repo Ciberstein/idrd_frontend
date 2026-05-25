@@ -1,14 +1,11 @@
 import { useState, useEffect, useReducer } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  Dialog, DialogPanel, DialogTitle,
-  Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption,
-} from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Navbar from '../components/Navbar';
-import GimnasioCombobox from '../components/GimnasioCombobox';
+import Combobox from '../components/Combobox';
 import {
   getGimnasios,
   getAddresses,
@@ -124,54 +121,6 @@ function TimeField({ label, id, registration, error, readOnly, ...props }) {
   );
 }
 
-function AddressCombobox({ addresses, value, onChange, error }) {
-  const options = addresses.map((a) => ({
-    value: a.id,
-    label: a.label || formatAddress(a),
-    location: [a.city, a.department].filter(Boolean).join(', '),
-  }));
-
-  const selected = options.find((o) => o.value === value) ?? null;
-
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-slate-700">Dirección</label>
-      <Combobox value={selected} onChange={(opt) => onChange(opt?.value ?? null)}>
-        <div className="relative">
-          <ComboboxInput
-            readOnly
-            className={`w-full px-3 py-2 pr-8 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition cursor-pointer ${
-              error ? 'border-red-400' : 'border-slate-200'
-            }`}
-            displayValue={(opt) => opt?.label ?? ''}
-            placeholder="Selecciona una dirección"
-          />
-          <ComboboxButton className="absolute inset-0 flex items-center justify-end pr-2 cursor-pointer">
-            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </ComboboxButton>
-        </div>
-        <ComboboxOptions
-          anchor="bottom"
-          className="w-(--input-width) rounded-xl border border-slate-200 bg-white py-1 shadow-lg z-50 focus:outline-none empty:hidden mt-1"
-        >
-          {options.map((opt) => (
-            <ComboboxOption
-              key={opt.value ?? '__none__'}
-              value={opt}
-              className="group px-4 py-2 cursor-pointer select-none data-focus:bg-indigo-50"
-            >
-              <p className="text-sm text-slate-700 group-data-selected:font-semibold group-data-selected:text-indigo-600">{opt.label}</p>
-              {opt.location && <p className="text-xs text-slate-400">{opt.location}</p>}
-            </ComboboxOption>
-          ))}
-        </ComboboxOptions>
-      </Combobox>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
 
 function addOneHour(time) {
   if (!time) return '';
@@ -200,11 +149,14 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
         control={control}
         rules={{ required: 'Requerido' }}
         render={({ field }) => (
-          <GimnasioCombobox
+          <Combobox
+            label="Gimnasio"
             options={gimnasioOptions}
             value={field.value}
             onChange={field.onChange}
             error={errors.gimnasio_id?.message}
+            searchable
+            placeholder="Buscar gimnasio…"
           />
         )}
       />
@@ -214,11 +166,18 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
         control={control}
         rules={{ required: 'Requerido' }}
         render={({ field }) => (
-          <AddressCombobox
-            addresses={userAddresses}
+          <Combobox
+            label="Dirección"
+            options={userAddresses.map((a) => ({
+              value: a.id,
+              label: a.label || formatAddress(a),
+              subtitle: [a.city, a.department].filter(Boolean).join(', '),
+            }))}
             value={field.value}
             onChange={field.onChange}
             error={errors.address_id?.message}
+            placeholder="Selecciona una dirección"
+            emptyValue={null}
           />
         )}
       />

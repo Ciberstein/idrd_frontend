@@ -3,10 +3,8 @@ import { PencilSquareIcon, TrashIcon, StarIcon } from '@heroicons/react/24/outli
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import DocTypeCombobox from '../components/DocTypeCombobox';
-import ViaTypeCombobox from '../components/ViaTypeCombobox';
-import DepartmentCombobox from '../components/DepartmentCombobox';
-import CityCombobox from '../components/CityCombobox';
+import Combobox from '../components/Combobox';
+import { DEPARTMENTS, COLOMBIA } from '../data/colombia';
 import {
   updateProfile,
   requestEmailChange,
@@ -18,6 +16,8 @@ import {
   updateAddress,
   deleteAddress,
   setDefaultAddress,
+  getDocTypes,
+  getViaTypes,
 } from '../api/auth';
 import Navbar from '../components/Navbar';
 
@@ -85,6 +85,13 @@ function SectionDivider({ title }) {
 function GeneralSection() {
   const { user, updateUser } = useAuth();
   const showToast = useToast();
+  const [docTypes, setDocTypes] = useState([]);
+
+  useEffect(() => {
+    getDocTypes()
+      .then(({ data }) => setDocTypes(data.map((t) => ({ value: t.code, label: `${t.code} – ${t.name}` }))))
+      .catch(() => {});
+  }, []);
 
   const {
     register,
@@ -152,10 +159,13 @@ function GeneralSection() {
           control={control}
           rules={{ required: 'Requerido' }}
           render={({ field }) => (
-            <DocTypeCombobox
+            <Combobox
+              label="Tipo de documento"
+              options={docTypes}
               value={field.value ?? ''}
               onChange={field.onChange}
               error={errors.doc_type?.message}
+              placeholder="Selecciona un tipo"
             />
           )}
         />
@@ -467,6 +477,14 @@ function QuadrantSelect({ label, id, optional, error, ...props }) {
 }
 
 function AddressForm({ initial, onSave, onCancel }) {
+  const [viaTypes, setViaTypes] = useState([]);
+
+  useEffect(() => {
+    getViaTypes()
+      .then(({ data }) => setViaTypes(data.map((t) => ({ value: t.code, label: `${t.code} – ${t.name}` }))))
+      .catch(() => {});
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -534,13 +552,14 @@ function AddressForm({ initial, onSave, onCancel }) {
           control={control}
           rules={{ required: 'Requerido' }}
           render={({ field }) => (
-            <DepartmentCombobox
+            <Combobox
+              label="Departamento"
+              options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
               value={field.value}
-              onChange={(val) => {
-                field.onChange(val);
-                setValue('city', '');
-              }}
+              onChange={(val) => { field.onChange(val); setValue('city', ''); }}
               error={errors.department?.message}
+              searchable
+              placeholder="Buscar departamento…"
             />
           )}
         />
@@ -549,11 +568,15 @@ function AddressForm({ initial, onSave, onCancel }) {
           control={control}
           rules={{ required: 'Requerido' }}
           render={({ field }) => (
-            <CityCombobox
+            <Combobox
+              label="Ciudad"
+              options={(COLOMBIA[watch('department')] ?? []).map((c) => ({ value: c, label: c }))}
               value={field.value}
               onChange={field.onChange}
-              department={watch('department')}
               error={errors.city?.message}
+              searchable
+              disabled={!watch('department')}
+              placeholder={!watch('department') ? 'Selecciona un departamento primero' : 'Buscar ciudad…'}
             />
           )}
         />
@@ -565,7 +588,14 @@ function AddressForm({ initial, onSave, onCancel }) {
           control={control}
           rules={{ required: 'Requerido' }}
           render={({ field }) => (
-            <ViaTypeCombobox value={field.value ?? ''} onChange={field.onChange} error={errors.via_type?.message} />
+            <Combobox
+              label="Tipo de vía"
+              options={viaTypes}
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              error={errors.via_type?.message}
+              placeholder="Selecciona un tipo"
+            />
           )}
         />
         <Field label="Número de vía" id="via_number" placeholder="17A"

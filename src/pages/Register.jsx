@@ -1,8 +1,9 @@
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import { register as registerUser } from '../api/auth';
+import { register as registerUser, getDocTypes } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
-import DocTypeCombobox from '../components/DocTypeCombobox';
+import Combobox from '../components/Combobox';
 
 function Field({ label, id, optional, error, ...props }) {
   return (
@@ -27,6 +28,13 @@ function Field({ label, id, optional, error, ...props }) {
 export default function Register() {
   const { user, checking } = useAuth();
   const navigate = useNavigate();
+  const [docTypes, setDocTypes] = useState([]);
+
+  useEffect(() => {
+    getDocTypes()
+      .then(({ data }) => setDocTypes(data.map((t) => ({ value: t.code, label: `${t.code} – ${t.name}` }))))
+      .catch(() => {});
+  }, []);
 
   const {
     register,
@@ -81,10 +89,13 @@ export default function Register() {
               control={control}
               rules={{ required: 'Requerido' }}
               render={({ field }) => (
-                <DocTypeCombobox
+                <Combobox
+                  label="Tipo de documento"
+                  options={docTypes}
                   value={field.value ?? ''}
                   onChange={field.onChange}
                   error={errors.doc_type?.message}
+                  placeholder="Selecciona un tipo"
                 />
               )}
             />
