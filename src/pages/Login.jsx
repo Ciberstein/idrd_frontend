@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { login } from '../api/auth';
-import PasswordField from '../components/PasswordField';
 import { useAuth } from '../context/AuthContext';
+import PasswordField from '../components/PasswordField';
+import Captcha from '../components/Captcha';
 
 export default function Login() {
   const { user, checking, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const verified = location.state?.verified;
+  const [captchaToken, setCaptchaToken] = useState('');
 
   const {
     register,
@@ -21,7 +24,7 @@ export default function Login() {
 
   const onSubmit = async ({ email, password }) => {
     try {
-      const { data, status } = await login(email, password);
+      const { data, status } = await login(email, password, captchaToken);
       if (status === 200 && data.account) {
         signIn(data.account, data.token);
         navigate('/home');
@@ -31,6 +34,7 @@ export default function Login() {
         });
       }
     } catch (err) {
+      setCaptchaToken('');
       setError('root', { message: err?.data?.message || 'Authentication failed' });
     }
   };
@@ -80,23 +84,22 @@ export default function Login() {
             {...register('password', { required: 'La contraseña es requerida' })}
           />
 
+          <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>
           )}
 
           <button
             type="submit"
-            disabled={isSubmitting || !isValid}
+            disabled={isSubmitting || !isValid || !captchaToken}
             className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
           >
             {isSubmitting ? 'Iniciando sesión…' : 'Iniciar sesión'}
           </button>
 
           <div className="text-center">
-            <Link
-              to="/forgot-password"
-              className="text-sm text-slate-500 hover:text-indigo-600 transition"
-            >
+            <Link to="/forgot-password" className="text-sm text-slate-500 hover:text-indigo-600 transition">
               ¿Olvidaste tu contraseña?
             </Link>
           </div>

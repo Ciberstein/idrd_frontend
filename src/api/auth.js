@@ -42,8 +42,8 @@ export const setDefaultAddress = (id) =>
 export const getReservas = () =>
   api.get('/me/reservas');
 
-export const createReserva = (data) =>
-  api.post('/me/reservas', data);
+export const createReserva = (data, captcha_token) =>
+  api.post('/me/reservas', { ...data, captcha_token });
 
 export const updateReserva = (id, data) =>
   api.patch(`/me/reservas/${id}`, data);
@@ -52,8 +52,8 @@ export const deleteReserva = (id) =>
   api.delete(`/me/reservas/${id}`);
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-export const login = (email, password) =>
-  api.post('/auth/login', { email, password });
+export const login = (email, password, captcha_token) =>
+  api.post('/auth/login', { email, password, captcha_token });
 
 export const register = (data) =>
   api.post('/auth/register', data);

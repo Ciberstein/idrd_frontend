@@ -5,6 +5,7 @@ import { register as registerUser, getDocTypes } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import Combobox from '../components/Combobox';
 import PasswordField from '../components/PasswordField';
+import Captcha from '../components/Captcha';
 
 function Field({ label, id, optional, error, ...props }) {
   return (
@@ -30,6 +31,7 @@ export default function Register() {
   const { user, checking } = useAuth();
   const navigate = useNavigate();
   const [docTypes, setDocTypes] = useState([]);
+  const [captchaToken, setCaptchaToken] = useState('');
 
   useEffect(() => {
     getDocTypes()
@@ -61,6 +63,7 @@ export default function Register() {
         email: data.email,
         password: data.password,
         password_repeat: data.password_repeat,
+        captcha_token: captchaToken,
       };
       const { data: res } = await registerUser(payload);
       if (res.account) {
@@ -69,6 +72,7 @@ export default function Register() {
         });
       }
     } catch (err) {
+      setCaptchaToken('');
       setError('root', { message: err?.data?.message || 'Registration failed' });
     }
   };
@@ -161,13 +165,15 @@ export default function Register() {
             })}
           />
 
+          <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>
           )}
 
           <button
             type="submit"
-            disabled={isSubmitting || !isValid}
+            disabled={isSubmitting || !isValid || !captchaToken}
             className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
           >
             {isSubmitting ? 'Creando cuenta…' : 'Crear cuenta'}
