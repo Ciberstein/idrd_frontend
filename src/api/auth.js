@@ -86,8 +86,8 @@ export const confirmEmailChange = (code, email) =>
   api.patch('/auth/update/email/validation', { code: Number(code), email });
 
 // ── Password recovery (2-step, unauthenticated) ───────────────────────────────
-export const requestRecovery = (email) =>
-  api.post('/auth/recovery', { email });
+export const requestRecovery = (email, captcha_token) =>
+  api.post('/auth/recovery', { email, captcha_token });
 
 export const confirmRecovery = (accountId, code, password, password_repeat) =>
   api.post('/auth/recovery/validation', {

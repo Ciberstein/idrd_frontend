@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { requestRecovery, confirmRecovery } from '../api/auth';
 import PasswordField from '../components/PasswordField';
+import Captcha from '../components/Captcha';
 
 function Field({ label, id, error, ...props }) {
   return (
@@ -24,6 +25,8 @@ function Field({ label, id, error, ...props }) {
 
 // ── Step 1: request recovery code ─────────────────────────────────────────────
 function EmailStep({ onSuccess }) {
+  const [captchaToken, setCaptchaToken] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -33,9 +36,10 @@ function EmailStep({ onSuccess }) {
 
   const onSubmit = async ({ email }) => {
     try {
-      const { data } = await requestRecovery(email);
+      const { data } = await requestRecovery(email, captchaToken);
       onSuccess({ accountId: data.account.id, email: data.account.email });
     } catch (err) {
+      setCaptchaToken('');
       setError('root', {
         message: err?.data?.message || 'No se encontró una cuenta con ese correo.',
       });
@@ -56,6 +60,8 @@ function EmailStep({ onSuccess }) {
         })}
       />
 
+      <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+
       {errors.root && (
         <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">
           {errors.root.message}
@@ -64,7 +70,7 @@ function EmailStep({ onSuccess }) {
 
       <button
         type="submit"
-        disabled={isSubmitting || !isValid}
+        disabled={isSubmitting || !isValid || !captchaToken}
         className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
       >
         {isSubmitting ? 'Enviando código…' : 'Enviar código'}
