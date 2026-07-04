@@ -84,8 +84,6 @@ export default function Register() {
 
       <div className="w-full max-w-md lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 flex flex-col gap-4">
 
-        <img src="/idrd_logos_m.png" alt="IDR Logo" className="w-full" />
-
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Crear cuenta</h1>
           <p className="text-sm text-slate-500">Completa tus datos para registrarte</p>
