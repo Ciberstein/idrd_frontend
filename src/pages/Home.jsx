@@ -5,6 +5,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
+import StreakPanel from '../components/StreakPanel';
 import {
   getGimnasios,
   getAddresses,
@@ -372,6 +373,8 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-slate-900 mt-1">{fullName(user)}</h1>
         <p className="text-slate-500 text-sm mt-2">Has iniciado sesión en el portal IRDR.</p>
       </div>
+
+      <StreakPanel reservas={state.reservas} loading={state.loading} />
 
       <ReservasSection state={state} dispatch={dispatch} />
     </div>
