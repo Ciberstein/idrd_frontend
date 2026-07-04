@@ -40,8 +40,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-white lg:bg-slate-50 px-4">
+      <div className="w-full max-w-sm lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Bienvenido</h1>
           <p className="text-sm text-slate-500 mt-1">Inicia sesión en tu cuenta</p>
