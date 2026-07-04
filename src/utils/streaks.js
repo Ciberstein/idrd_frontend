@@ -82,33 +82,3 @@ export function computeStreaks(reservations) {
 
   return { current: run, longest };
 }
-
-const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-
-// Reservas por semana (Lun–Dom) en las últimas `weeks` semanas, incluida la actual.
-export function reservationsPerWeek(reservations, weeks = 12) {
-  const thisMonday = mondayOf(new Date());
-
-  const buckets = [];
-  for (let i = weeks - 1; i >= 0; i--) {
-    const start = addDays(thisMonday, -7 * i);
-    buckets.push({
-      key: dateKey(start),
-      label: `${start.getDate()} ${MONTHS[start.getMonth()]}`,
-      count: 0,
-    });
-  }
-
-  const firstKey = buckets[0].key;
-  const byKey = new Map(buckets.map((b) => [b.key, b]));
-
-  for (const r of reservations || []) {
-    if (!r.reservation_date) continue;
-    const wkKey = dateKey(mondayOf(parseKey(r.reservation_date)));
-    if (wkKey < firstKey) continue; // fuera de la ventana
-    const bucket = byKey.get(wkKey);
-    if (bucket) bucket.count += 1;
-  }
-
-  return buckets;
-}
