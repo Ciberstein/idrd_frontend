@@ -60,6 +60,17 @@ export function AuthProvider({ children }) {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     if (token) localStorage.setItem('token', token);
+    // La respuesta de login no incluye `authority`; hidratamos el user completo
+    // desde validateSession (fuente de verdad) para que el rol esté disponible
+    // de inmediato (p.ej. la opción de admin), sin depender de un reload.
+    validateSession()
+      .then(({ data }) => {
+        if (data?.auth && data.user) {
+          setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+      })
+      .catch(() => {});
   };
 
   const updateUser = (partial) => {
