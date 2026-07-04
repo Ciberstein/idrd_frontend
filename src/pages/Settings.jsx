@@ -20,7 +20,6 @@ import {
   getDocTypes,
   getViaTypes,
 } from '../api/auth';
-import Navbar from '../components/Navbar';
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 function Field({ label, id, optional, error, ...props }) {
@@ -873,42 +872,38 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState('general');
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
+        <p className="text-sm text-slate-500">Administra tu información y seguridad</p>
+      </div>
 
-      <main className="max-w-2xl mx-auto px-6 py-10">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Configuración</h1>
-          <p className="text-sm text-slate-500 mt-1">Administra tu información y seguridad</p>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-slate-200">
+          {TABS.map((tab) => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-3 text-sm font-medium transition cursor-pointer ${
+                activeTab === tab.id
+                  ? 'text-indigo-600 border-b-2 border-indigo-600 -mb-px'
+                  : 'text-slate-500 hover:text-slate-700'
+              }`}>
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-slate-200">
-            {TABS.map((tab) => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm font-medium transition cursor-pointer ${
-                  activeTab === tab.id
-                    ? 'text-indigo-600 border-b-2 border-indigo-600 -mb-px'
-                    : 'text-slate-500 hover:text-slate-700'
-                }`}>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="p-6 space-y-6">
-            {activeTab === 'general' && (
-              <>
-                <GeneralSection />
-                <SectionDivider title="Correo electrónico" />
-                <EmailSection />
-              </>
-            )}
-            {activeTab === 'security' && <SecuritySection />}
-            {activeTab === 'addresses' && <AddressesSection />}
-          </div>
+        <div className="p-6 space-y-6">
+          {activeTab === 'general' && (
+            <>
+              <GeneralSection />
+              <SectionDivider title="Correo electrónico" />
+              <EmailSection />
+            </>
+          )}
+          {activeTab === 'security' && <SecuritySection />}
+          {activeTab === 'addresses' && <AddressesSection />}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

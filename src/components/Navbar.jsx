@@ -25,7 +25,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-6 py-3 w-full">
-      <div className="max-w-5xl mx-auto flex items-center justify-between">
+      <div className="max-w-4xl mx-auto flex items-center justify-between">
         <Link to="/home" className="text-lg font-bold text-indigo-600 tracking-tight">
           IRDR
         </Link>
@@ -36,7 +36,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 select-none">
               {initials}
             </div>
-            <span className="text-sm font-medium text-slate-700 hidden sm:block">
+            <span className="text-sm font-medium text-slate-700 hidden lg:block">
               {fullName(user)}
             </span>
             <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

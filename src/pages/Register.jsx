@@ -9,7 +9,7 @@ import Captcha from '../components/Captcha';
 
 function Field({ label, id, optional, error, ...props }) {
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-slate-700 flex gap-1" htmlFor={id}>
         {label}
         {optional && <span className="text-slate-400 font-normal">(opcional)</span>}
@@ -81,13 +81,17 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white lg:bg-slate-50 px-4 py-10">
-      <div className="w-full max-w-md lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 space-y-6">
+
+      <div className="w-full max-w-md lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 flex flex-col gap-4">
+
+        <img src="/idrd_logos_m.png" alt="IDR Logo" className="w-full" />
+
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Crear cuenta</h1>
-          <p className="text-sm text-slate-500 mt-1">Completa tus datos para registrarte</p>
+          <p className="text-sm text-slate-500">Completa tus datos para registrarte</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Controller
               name="doc_type"

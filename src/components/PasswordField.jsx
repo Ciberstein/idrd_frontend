@@ -5,7 +5,7 @@ export default function PasswordField({ label, id, optional, error, ...props }) 
   const [show, setShow] = useState(false);
 
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-slate-700 flex gap-1" htmlFor={id}>
         {label}
         {optional && <span className="text-slate-400 font-normal">(opcional)</span>}

@@ -4,7 +4,6 @@ import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import Navbar from '../components/Navbar';
 import Combobox from '../components/Combobox';
 import {
   getGimnasios,
@@ -283,7 +282,7 @@ function ReservasSection({ state, dispatch }) {
 
   if (state.loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 w-full">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 w-full">
         <p className="text-sm text-slate-400 text-center py-8">Cargando…</p>
       </div>
     );
@@ -291,11 +290,11 @@ function ReservasSection({ state, dispatch }) {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 w-full">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Mis reservas</h2>
           <button onClick={openAdd}
-            className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition cursor-pointer">
+            className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition cursor-pointer w-full sm:w-max">
             + Nueva reserva
           </button>
         </div>
@@ -367,18 +366,14 @@ export default function Home() {
   useEffect(() => { loadAll(dispatch); }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
+    <div className="flex flex-col gap-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <p className="text-sm text-slate-500 font-medium">Bienvenido,</p>
+        <h1 className="text-3xl font-bold text-slate-900 mt-1">{fullName(user)}</h1>
+        <p className="text-slate-500 text-sm mt-2">Has iniciado sesión en el portal IRDR.</p>
+      </div>
 
-      <main className="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <p className="text-sm text-slate-500 font-medium">Bienvenido,</p>
-          <h1 className="text-3xl font-bold text-slate-900 mt-1">{fullName(user)}</h1>
-          <p className="text-slate-500 text-sm mt-2">Has iniciado sesión en el portal IRDR.</p>
-        </div>
-
-        <ReservasSection state={state} dispatch={dispatch} />
-      </main>
+      <ReservasSection state={state} dispatch={dispatch} />
     </div>
   );
 }

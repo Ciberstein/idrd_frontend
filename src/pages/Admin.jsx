@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
-import Navbar from '../components/Navbar';
 import Combobox from '../components/Combobox';
 import { useToast } from '../context/ToastContext';
 import { getUsers, updateUser } from '../api/admin';
@@ -209,86 +208,7 @@ export default function Admin() {
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
-
-      <main className="max-w-7xl mx-auto px-6 py-10 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Panel de administración</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {total} usuario{total !== 1 ? 's' : ''} registrado{total !== 1 ? 's' : ''}
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-          <input
-            type="search"
-            placeholder="Buscar por nombre, correo o documento…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          />
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          {loading ? (
-            <p className="text-sm text-slate-400 text-center py-16">Cargando…</p>
-          ) : users.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-16">No se encontraron usuarios.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">ID</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Nombre</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Correo</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Documento</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Teléfono</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Rol</th>
-                    <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Registro</th>
-                    <th className="px-4 py-3" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {users.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-50 transition">
-                      <td className="px-4 py-3 text-slate-400 font-mono text-xs">#{u.id}</td>
-                      <td className="px-4 py-3">
-                        <p className="font-medium text-slate-800">
-                          {[u.first_name, u.last_name1].filter(Boolean).join(' ')}
-                        </p>
-                        {(u.middle_name || u.last_name2) && (
-                          <p className="text-xs text-slate-400">
-                            {[u.middle_name, u.last_name2].filter(Boolean).join(' ')}
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-slate-600">{u.email}</td>
-                      <td className="px-4 py-3 text-slate-600">
-                        <span className="text-xs text-slate-400 mr-1">{u.doc_type}</span>
-                        {u.doc_number}
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">{u.phone || '—'}</td>
-                      <td className="px-4 py-3">{authorityBadge(u.authority)}</td>
-                      <td className="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">{fmtDate(u.createdAt)}</td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={() => setEditUser(u)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition cursor-pointer"
-                        >
-                          <PencilSquareIcon className="w-3.5 h-3.5" />
-                          Editar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </main>
+    <div className="flex flex-col gap-6 ">
 
       <EditModal
         user={editUser}
@@ -297,6 +217,82 @@ export default function Admin() {
         onClose={() => setEditUser(null)}
         onSaved={handleSaved}
       />
+
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Panel de administración</h1>
+        <p className="text-sm text-slate-500 mt-1">
+          {total} usuario{total !== 1 ? 's' : ''} registrado{total !== 1 ? 's' : ''}
+        </p>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <input
+          type="search"
+          placeholder="Buscar por nombre, correo o documento…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        />
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        {loading ? (
+          <p className="text-sm text-slate-400 text-center py-16">Cargando…</p>
+        ) : users.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-16">No se encontraron usuarios.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">ID</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Nombre</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Correo</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Documento</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Teléfono</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Rol</th>
+                  <th className="px-4 py-3 text-xs font-medium text-slate-400 uppercase tracking-wide">Registro</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-slate-50 transition">
+                    <td className="px-4 py-3 text-slate-400 font-mono text-xs">#{u.id}</td>
+                    <td className="px-4 py-3">
+                      <p className="font-medium text-slate-800">
+                        {[u.first_name, u.last_name1].filter(Boolean).join(' ')}
+                      </p>
+                      {(u.middle_name || u.last_name2) && (
+                        <p className="text-xs text-slate-400">
+                          {[u.middle_name, u.last_name2].filter(Boolean).join(' ')}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                    <td className="px-4 py-3 text-slate-600">
+                      <span className="text-xs text-slate-400 mr-1">{u.doc_type}</span>
+                      {u.doc_number}
+                    </td>
+                    <td className="px-4 py-3 text-slate-500">{u.phone || '—'}</td>
+                    <td className="px-4 py-3">{authorityBadge(u.authority)}</td>
+                    <td className="px-4 py-3 text-slate-400 text-xs whitespace-nowrap">{fmtDate(u.createdAt)}</td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => setEditUser(u)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition cursor-pointer"
+                      >
+                        <PencilSquareIcon className="w-3.5 h-3.5" />
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import UserLayout from './layouts/UserLayout';
+import AdminLayout from './layouts/AdminLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Verify from './pages/Verify';
@@ -22,15 +24,18 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify" element={<Verify />} />
-          <Route path="/home" element={
-            <ProtectedRoute><Home /></ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute><Settings /></ProtectedRoute>
-          } />
-          <Route path="/admin" element={
-            <AdminRoute><Admin /></AdminRoute>
-          } />
+
+          {/* Páginas de usuario autenticado — layout compartido */}
+          <Route element={<ProtectedRoute><UserLayout /></ProtectedRoute>}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+
+          {/* Área de administración — layout propio, guard de admin */}
+          <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
+
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
         </ToastProvider>

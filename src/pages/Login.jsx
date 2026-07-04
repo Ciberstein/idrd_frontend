@@ -41,10 +41,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white lg:bg-slate-50 px-4">
-      <div className="w-full max-w-sm lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 space-y-6">
+      
+      <div className="w-full max-w-sm lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 flex flex-col gap-4">
+        
+        <img src="/idrd_logos_m.png" alt="IDR Logo" className="w-full" />
+
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Bienvenido</h1>
-          <p className="text-sm text-slate-500 mt-1">Inicia sesión en tu cuenta</p>
+          <p className="text-sm text-slate-500">Inicia sesión en tu cuenta</p>
         </div>
 
         {verified && (
@@ -59,8 +63,8 @@ export default function Login() {
           </p>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-slate-700" htmlFor="email">
               Correo electrónico
             </label>
