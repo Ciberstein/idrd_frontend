@@ -26,6 +26,7 @@ function Field({ label, id, error, ...props }) {
 // ── Step 1: request recovery code ─────────────────────────────────────────────
 function EmailStep({ onSuccess }) {
   const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     register,
@@ -40,6 +41,7 @@ function EmailStep({ onSuccess }) {
       onSuccess({ accountId: data.account.id, email: data.account.email });
     } catch (err) {
       setCaptchaToken('');
+      setCaptchaKey((k) => k + 1); // remonta el captcha: token de un solo uso
       setError('root', {
         message: err?.data?.message || 'No se encontró una cuenta con ese correo.',
       });
@@ -60,7 +62,7 @@ function EmailStep({ onSuccess }) {
         })}
       />
 
-      <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+      <Captcha key={captchaKey} onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
 
       {errors.root && (
         <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">

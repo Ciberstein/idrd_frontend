@@ -32,6 +32,7 @@ export default function Register() {
   const navigate = useNavigate();
   const [docTypes, setDocTypes] = useState([]);
   const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   useEffect(() => {
     getDocTypes()
@@ -73,6 +74,7 @@ export default function Register() {
       }
     } catch (err) {
       setCaptchaToken('');
+      setCaptchaKey((k) => k + 1); // remonta el captcha: token de un solo uso
       setError('root', { message: err?.data?.message || 'Registration failed' });
     }
   };
@@ -83,6 +85,8 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center bg-white lg:bg-slate-50 px-4 py-10">
 
       <div className="w-full max-w-md lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 flex flex-col gap-4">
+
+        <img src="/favicon.svg" alt="IDRD" className="w-20 mx-auto" />
 
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Crear cuenta</h1>
@@ -167,7 +171,7 @@ export default function Register() {
             })}
           />
 
-          <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+          <Captcha key={captchaKey} onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
 
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>

@@ -12,6 +12,7 @@ export default function Login() {
   const location = useLocation();
   const verified = location.state?.verified;
   const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   const {
     register,
@@ -35,6 +36,7 @@ export default function Login() {
       }
     } catch (err) {
       setCaptchaToken('');
+      setCaptchaKey((k) => k + 1); // remonta el captcha: token de un solo uso
       setError('root', { message: err?.data?.message || 'Authentication failed' });
     }
   };
@@ -42,6 +44,8 @@ export default function Login() {
   return (
     <div className="h-screen flex items-center justify-center  bg-white lg:bg-slate-50 px-4">
       <div className="w-full max-w-sm lg:bg-white rounded-2xl lg:shadow-lg lg:p-8 flex flex-col gap-4">
+
+        <img src="/favicon.svg" alt="IDRD" className="w-20 mx-auto" />
 
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900">Bienvenido</h1>
@@ -85,7 +89,7 @@ export default function Login() {
             {...register('password', { required: 'La contraseña es requerida' })}
           />
 
-          <Captcha onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+          <Captcha key={captchaKey} onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
 
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>
