@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { verifyCode } from '../api/auth';
+import { codeInputClasses } from '../components/Input';
 
 export default function Verify() {
   const { state } = useLocation();
@@ -66,9 +67,7 @@ export default function Verify() {
                 pattern: { value: /^\d{6}$/, message: 'Debe ser un código de 6 dígitos' },
               })}
               maxLength={6}
-              className={`w-full px-3 py-3 rounded-lg border text-slate-900 placeholder-slate-400 text-center text-xl tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                errors.code ? 'border-red-400' : 'border-slate-200'
-              }`}
+              className={codeInputClasses({ error: !!errors.code })}
             />
             {errors.code && <p className="text-xs text-red-600">{errors.code.message}</p>}
           </div>

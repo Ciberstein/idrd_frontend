@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
-import PasswordField from '../components/PasswordField';
 import Captcha from '../components/Captcha';
+import Input from '../components/Input';
 
 export default function Login() {
   const { user, checking, signIn } = useAuth();
@@ -65,23 +65,16 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-slate-700" htmlFor="email">
-              Correo electrónico
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="tu@correo.com"
-              {...register('email', { required: 'El correo es requerido' })}
-              className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-                errors.email ? 'border-red-400' : 'border-slate-200'
-              }`}
-            />
-            {errors.email && <p className="text-xs text-red-600">{errors.email.message}</p>}
-          </div>
+          <Input
+            id="email"
+            label="Correo electrónico"
+            type="email"
+            placeholder="tu@correo.com"
+            error={errors.email?.message}
+            {...register('email', { required: 'El correo es requerido' })}
+          />
 
-          <PasswordField
+          <Input type="password"
             label="Contraseña"
             id="password"
             placeholder="••••••••"

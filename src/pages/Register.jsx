@@ -4,27 +4,8 @@ import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { register as registerUser, getDocTypes } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import Combobox from '../components/Combobox';
-import PasswordField from '../components/PasswordField';
 import Captcha from '../components/Captcha';
-
-function Field({ label, id, optional, error, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-slate-700 flex gap-1" htmlFor={id}>
-        {label}
-        {optional && <span className="text-slate-400 font-normal">(opcional)</span>}
-      </label>
-      <input
-        id={id}
-        className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        }`}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
+import Input from '../components/Input';
 
 
 export default function Register() {
@@ -110,35 +91,35 @@ export default function Register() {
                 />
               )}
             />
-            <Field label="Número de documento" id="doc_number" placeholder="Ej: 1234567890"
+            <Input label="Número de documento" id="doc_number" placeholder="Ej: 1234567890"
               error={errors.doc_number?.message}
               {...register('doc_number', { required: 'Requerido' })}
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Primer nombre" id="first_name" placeholder="Ej: Carlos"
+            <Input label="Primer nombre" id="first_name" placeholder="Ej: Carlos"
               error={errors.first_name?.message}
               {...register('first_name', { required: 'Requerido' })}
             />
-            <Field label="Segundo nombre" id="middle_name" placeholder="Ej: Andrés" optional
+            <Input label="Segundo nombre" id="middle_name" placeholder="Ej: Andrés" optional
               error={errors.middle_name?.message}
               {...register('middle_name')}
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Field label="Primer apellido" id="last_name1" placeholder="Ej: García"
+            <Input label="Primer apellido" id="last_name1" placeholder="Ej: García"
               error={errors.last_name1?.message}
               {...register('last_name1', { required: 'Requerido' })}
             />
-            <Field label="Segundo apellido" id="last_name2" placeholder="Ej: López" optional
+            <Input label="Segundo apellido" id="last_name2" placeholder="Ej: López" optional
               error={errors.last_name2?.message}
               {...register('last_name2')}
             />
           </div>
 
-          <Field label="Fecha de nacimiento" id="birth_date" type="date"
+          <Input label="Fecha de nacimiento" id="birth_date" type="date"
             max={new Date().toISOString().split('T')[0]}
             error={errors.birth_date?.message}
             {...register('birth_date', {
@@ -147,7 +128,7 @@ export default function Register() {
             })}
           />
 
-          <Field label="Correo electrónico" id="email" type="email" placeholder="tu@correo.com"
+          <Input label="Correo electrónico" id="email" type="email" placeholder="tu@correo.com"
             error={errors.email?.message}
             {...register('email', {
               required: 'El correo es requerido',
@@ -155,7 +136,7 @@ export default function Register() {
             })}
           />
 
-          <PasswordField label="Contraseña" id="password" placeholder="Mínimo 8 caracteres"
+          <Input type="password" label="Contraseña" id="password" placeholder="Mínimo 8 caracteres"
             error={errors.password?.message}
             {...register('password', {
               required: 'La contraseña es requerida',
@@ -163,7 +144,7 @@ export default function Register() {
             })}
           />
 
-          <PasswordField label="Confirmar contraseña" id="password_repeat" placeholder="••••••••"
+          <Input type="password" label="Confirmar contraseña" id="password_repeat" placeholder="••••••••"
             error={errors.password_repeat?.message}
             {...register('password_repeat', {
               required: 'Confirma tu contraseña',

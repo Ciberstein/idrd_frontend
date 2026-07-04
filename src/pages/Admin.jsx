@@ -3,6 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import Combobox from '../components/Combobox';
+import Input from '../components/Input';
+import { inputClasses } from '../components/Input';
 import { useToast } from '../context/ToastContext';
 import { getUsers, updateUser } from '../api/admin';
 import { getDocTypes } from '../api/auth';
@@ -27,22 +29,6 @@ function authorityBadge(authority) {
 function fmtDate(d) {
   if (!d) return '—';
   return new Date(d).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function Field({ label, id, error, ...props }) {
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-slate-700" htmlFor={id}>{label}</label>
-      <input
-        id={id}
-        className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        }`}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
 }
 
 function EditModal({ user, docTypes, open, onClose, onSaved }) {
@@ -102,20 +88,20 @@ function EditModal({ user, docTypes, open, onClose, onSaved }) {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Primer nombre" id="first_name" error={errors.first_name?.message}
+              <Input label="Primer nombre" id="first_name" error={errors.first_name?.message}
                 {...register('first_name', { required: 'Requerido' })} />
-              <Field label="Segundo nombre" id="middle_name"
+              <Input label="Segundo nombre" id="middle_name"
                 {...register('middle_name')} />
-              <Field label="Primer apellido" id="last_name1" error={errors.last_name1?.message}
+              <Input label="Primer apellido" id="last_name1" error={errors.last_name1?.message}
                 {...register('last_name1', { required: 'Requerido' })} />
-              <Field label="Segundo apellido" id="last_name2"
+              <Input label="Segundo apellido" id="last_name2"
                 {...register('last_name2')} />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Fecha de nacimiento" id="birth_date" type="date"
+              <Input label="Fecha de nacimiento" id="birth_date" type="date"
                 {...register('birth_date')} />
-              <Field label="Teléfono" id="phone" type="tel"
+              <Input label="Teléfono" id="phone" type="tel"
                 {...register('phone')} />
             </div>
 
@@ -134,7 +120,7 @@ function EditModal({ user, docTypes, open, onClose, onSaved }) {
                   />
                 )}
               />
-              <Field label="Número de documento" id="doc_number" error={errors.doc_number?.message}
+              <Input label="Número de documento" id="doc_number" error={errors.doc_number?.message}
                 {...register('doc_number', { required: 'Requerido' })} />
             </div>
 
@@ -231,7 +217,7 @@ export default function Admin() {
           placeholder="Buscar por nombre, correo o documento…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={inputClasses()}
         />
       </div>
 

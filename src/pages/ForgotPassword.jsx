@@ -2,26 +2,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { requestRecovery, confirmRecovery } from '../api/auth';
-import PasswordField from '../components/PasswordField';
 import Captcha from '../components/Captcha';
-
-function Field({ label, id, error, ...props }) {
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-slate-700" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        id={id}
-        className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        }`}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
+import Input, { codeInputClasses } from '../components/Input';
 
 // ── Step 1: request recovery code ─────────────────────────────────────────────
 function EmailStep({ onSuccess }) {
@@ -50,7 +32,7 @@ function EmailStep({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Field
+      <Input
         label="Correo electrónico"
         id="email"
         type="email"
@@ -128,14 +110,12 @@ function ResetStep({ accountId, email, onBack }) {
             required: 'El código es requerido',
             pattern: { value: /^\d{6}$/, message: 'Debe ser un código de 6 dígitos' },
           })}
-          className={`w-full px-3 py-3 rounded-lg border text-slate-900 placeholder-slate-400 text-center text-xl tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-            errors.code ? 'border-red-400' : 'border-slate-200'
-          }`}
+          className={codeInputClasses({ error: !!errors.code })}
         />
         {errors.code && <p className="text-xs text-red-600">{errors.code.message}</p>}
       </div>
 
-      <PasswordField
+      <Input type="password"
         label="Nueva contraseña"
         id="password"
         placeholder="Mínimo 8 caracteres"
@@ -146,7 +126,7 @@ function ResetStep({ accountId, email, onBack }) {
         })}
       />
 
-      <PasswordField
+      <Input type="password"
         label="Confirmar nueva contraseña"
         id="password_repeat"
         placeholder="••••••••"

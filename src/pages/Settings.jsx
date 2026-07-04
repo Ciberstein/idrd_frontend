@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
-import PasswordField from '../components/PasswordField';
+import Input, { inputClasses, codeInputClasses } from '../components/Input';
 import { DEPARTMENTS, COLOMBIA } from '../data/colombia';
 import {
   updateProfile,
@@ -21,25 +21,6 @@ import {
   getViaTypes,
 } from '../api/auth';
 
-// ── Shared primitives ─────────────────────────────────────────────────────────
-function Field({ label, id, optional, error, ...props }) {
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-slate-700 flex gap-1" htmlFor={id}>
-        {label}
-        {optional && <span className="text-slate-400 font-normal">(opcional)</span>}
-      </label>
-      <input
-        id={id}
-        className={`w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        } ${props.readOnly ? 'bg-slate-50 text-slate-500 cursor-default' : ''}`}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
 
 function CodeInput({ id, registration, error }) {
   return (
@@ -54,9 +35,7 @@ function CodeInput({ id, registration, error }) {
         placeholder="000000"
         maxLength={6}
         {...registration}
-        className={`w-full px-3 py-3 rounded-lg border text-slate-900 placeholder-slate-400 text-center text-xl tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        }`}
+        className={codeInputClasses({ error: !!error })}
       />
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
@@ -134,18 +113,18 @@ function GeneralSection() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Primer nombre" id="first_name" error={errors.first_name?.message}
+        <Input label="Primer nombre" id="first_name" error={errors.first_name?.message}
           {...register('first_name', { required: 'Requerido' })} />
-        <Field label="Segundo nombre" id="middle_name" optional error={errors.middle_name?.message}
+        <Input label="Segundo nombre" id="middle_name" optional error={errors.middle_name?.message}
           {...register('middle_name')} />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Primer apellido" id="last_name1" error={errors.last_name1?.message}
+        <Input label="Primer apellido" id="last_name1" error={errors.last_name1?.message}
           {...register('last_name1', { required: 'Requerido' })} />
-        <Field label="Segundo apellido" id="last_name2" optional error={errors.last_name2?.message}
+        <Input label="Segundo apellido" id="last_name2" optional error={errors.last_name2?.message}
           {...register('last_name2')} />
       </div>
-      <Field label="Fecha de nacimiento" id="birth_date" type="date"
+      <Input label="Fecha de nacimiento" id="birth_date" type="date"
         max={new Date().toISOString().split('T')[0]}
         error={errors.birth_date?.message}
         {...register('birth_date', {
@@ -169,12 +148,12 @@ function GeneralSection() {
             />
           )}
         />
-        <Field label="Número de documento" id="doc_number"
+        <Input label="Número de documento" id="doc_number"
           error={errors.doc_number?.message}
           {...register('doc_number', { required: 'Requerido' })}
         />
       </div>
-      <Field label="Teléfono" id="phone" optional placeholder="Ej. 3001234567"
+      <Input label="Teléfono" id="phone" optional placeholder="Ej. 3001234567"
         error={errors.phone?.message}
         {...register('phone')}
       />
@@ -278,7 +257,7 @@ function EmailSection() {
 
   return (
     <form onSubmit={handle1(onRequest)} className="space-y-4">
-      <Field
+      <Input
         label="Correo actual"
         id="current_email"
         type="email"
@@ -286,7 +265,7 @@ function EmailSection() {
         readOnly
         onChange={() => {}}
       />
-      <Field
+      <Input
         label="Nuevo correo"
         id="email_new"
         type="email"
@@ -300,7 +279,7 @@ function EmailSection() {
             'Debe ser diferente al correo actual',
         })}
       />
-      <Field
+      <Input
         label="Repetir nuevo correo"
         id="email_new_repeat"
         type="email"
@@ -403,18 +382,18 @@ function SecuritySection() {
 
   return (
     <form onSubmit={handle1(onRequestChange)} className="space-y-4">
-      <PasswordField label="Contraseña actual" id="password" placeholder="••••••••"
+      <Input type="password" label="Contraseña actual" id="password" placeholder="••••••••"
         error={err1.password?.message}
         {...reg1('password', { required: 'La contraseña actual es requerida' })}
       />
-      <PasswordField label="Nueva contraseña" id="new_password" placeholder="Mínimo 8 caracteres"
+      <Input type="password" label="Nueva contraseña" id="new_password" placeholder="Mínimo 8 caracteres"
         error={err1.new_password?.message}
         {...reg1('new_password', {
           required: 'La nueva contraseña es requerida',
           minLength: { value: 8, message: 'Mínimo 8 caracteres' },
         })}
       />
-      <PasswordField label="Confirmar nueva contraseña" id="new_password_repeat" placeholder="••••••••"
+      <Input type="password" label="Confirmar nueva contraseña" id="new_password_repeat" placeholder="••••••••"
         error={err1.new_password_repeat?.message}
         {...reg1('new_password_repeat', {
           required: 'Confirma la nueva contraseña',
@@ -463,9 +442,7 @@ function QuadrantSelect({ label, id, optional, error, ...props }) {
       </label>
       <select
         id={id}
-        className={`w-full px-3 py-2 rounded-lg border text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer ${
-          error ? 'border-red-400' : 'border-slate-200'
-        }`}
+        className={inputClasses({ error: !!error, extra: 'bg-white cursor-pointer' })}
         {...props}
       >
         <option value="">Sin cuadrante</option>
@@ -598,7 +575,7 @@ function AddressForm({ initial, onSave, onCancel }) {
             />
           )}
         />
-        <Field label="Número de vía" id="via_number" placeholder="17A"
+        <Input label="Número de vía" id="via_number" placeholder="17A"
           error={errors.via_number?.message}
           {...register('via_number', { required: 'Requerido' })}
         />
@@ -620,7 +597,7 @@ function AddressForm({ initial, onSave, onCancel }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Número cruce" id="cross_number" placeholder="22D"
+        <Input label="Número cruce" id="cross_number" placeholder="22D"
           error={errors.cross_number?.message}
           {...register('cross_number', { required: 'Requerido' })}
         />
@@ -631,17 +608,17 @@ function AddressForm({ initial, onSave, onCancel }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="Placa" id="plate" placeholder="50"
+        <Input label="Placa" id="plate" placeholder="50"
           error={errors.plate?.message}
           {...register('plate', { required: 'Requerido' })}
         />
-        <Field label="Complemento" id="complement" placeholder="Apto 301" optional
+        <Input label="Complemento" id="complement" placeholder="Apto 301" optional
           error={errors.complement?.message}
           {...register('complement')}
         />
       </div>
 
-      <Field label="Etiqueta" id="label" placeholder="Casa, Trabajo…" optional
+      <Input label="Etiqueta" id="label" placeholder="Casa, Trabajo…" optional
         error={errors.label?.message}
         {...register('label')}
       />
