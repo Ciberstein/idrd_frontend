@@ -1,15 +1,18 @@
 import { useState, useEffect, useReducer } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
 import StreakPanel from '../components/StreakPanel';
+import { inputClasses } from '../components/Input';
+import clsx from 'clsx';
 import {
   getGimnasios,
   getAddresses,
   getReservas,
+  getStreak,
   createReserva,
   deleteReserva,
 } from '../api/auth';
@@ -21,11 +24,17 @@ function fullName(user) {
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
+const PAGE_SIZE = 10;
+
 const initialState = {
   reservas: [],
+  total: 0,
+  hasMore: false,
+  streak: { current: 0, longest: 0 },
   gimnasios: [],
   userAddresses: [],
   loading: true,
+  loadingMore: false,
   serverError: '',
 };
 
@@ -33,10 +42,24 @@ function reducer(state, action) {
   switch (action.type) {
     case 'LOADED':
       return { ...state, loading: false, ...action.payload };
+    case 'LOADING_MORE':
+      return { ...state, loadingMore: true };
+    case 'APPEND_RESERVAS':
+      return {
+        ...state,
+        loadingMore: false,
+        reservas: [...state.reservas, ...action.payload.reservas],
+        total: action.payload.total,
+        hasMore: action.payload.hasMore,
+      };
+    case 'LOADING_MORE_DONE':
+      return { ...state, loadingMore: false };
     case 'SET_RESERVAS':
-      return { ...state, reservas: action.payload };
+      return { ...state, ...action.payload };
+    case 'SET_STREAK':
+      return { ...state, streak: action.payload };
     case 'SET_ERROR':
-      return { ...state, serverError: action.payload };
+      return { ...state, loading: false, serverError: action.payload };
     default:
       return state;
   }
@@ -45,15 +68,19 @@ function reducer(state, action) {
 // ── Thunks ────────────────────────────────────────────────────────────────────
 async function loadAll(dispatch) {
   try {
-    const [reservasRes, gimnasiosRes, addressesRes] = await Promise.all([
-      getReservas(),
+    const [reservasRes, streakRes, gimnasiosRes, addressesRes] = await Promise.all([
+      getReservas({ limit: PAGE_SIZE, offset: 0 }),
+      getStreak(),
       getGimnasios(),
       getAddresses(),
     ]);
     dispatch({
       type: 'LOADED',
       payload: {
-        reservas: reservasRes.data,
+        reservas: reservasRes.data.reservas,
+        total: reservasRes.data.total,
+        hasMore: reservasRes.data.hasMore,
+        streak: streakRes.data,
         gimnasios: gimnasiosRes.data,
         userAddresses: addressesRes.data,
       },
@@ -63,10 +90,36 @@ async function loadAll(dispatch) {
   }
 }
 
-async function refreshReservas(dispatch) {
+async function loadMoreReservas(dispatch, offset) {
+  dispatch({ type: 'LOADING_MORE' });
   try {
-    const { data } = await getReservas();
-    dispatch({ type: 'SET_RESERVAS', payload: data });
+    const { data } = await getReservas({ limit: PAGE_SIZE, offset });
+    dispatch({
+      type: 'APPEND_RESERVAS',
+      payload: { reservas: data.reservas, total: data.total, hasMore: data.hasMore },
+    });
+  } catch {
+    dispatch({ type: 'LOADING_MORE_DONE' });
+  }
+}
+
+// Tras crear/eliminar: recarga las reservas ya visibles y la racha (aparte).
+async function refreshReservas(dispatch, loadedCount) {
+  try {
+    const limit = Math.max(PAGE_SIZE, loadedCount);
+    const [reservasRes, streakRes] = await Promise.all([
+      getReservas({ limit, offset: 0 }),
+      getStreak(),
+    ]);
+    dispatch({
+      type: 'SET_RESERVAS',
+      payload: {
+        reservas: reservasRes.data.reservas,
+        total: reservasRes.data.total,
+        hasMore: reservasRes.data.hasMore,
+      },
+    });
+    dispatch({ type: 'SET_STREAK', payload: streakRes.data });
   } catch { /* silent */ }
 }
 
@@ -87,11 +140,11 @@ function formatAddress(addr) {
   ].filter(Boolean).join(' ');
 }
 
-function fmtDate(d) {
+function fmtDate(d, config = {
+  day: '2-digit', month: 'short', timeZone: 'America/Bogota'
+}) {
   if (!d) return '—';
-  return new Date(d + 'T00:00:00').toLocaleDateString('es-CO', {
-    day: '2-digit', month: 'short', year: 'numeric',
-  });
+  return new Date(d + 'T00:00:00').toLocaleDateString('es-CO', config);
 }
 
 function fmtTime(t) {
@@ -110,9 +163,7 @@ function TimeField({ label, id, registration, error, readOnly, ...props }) {
         id={id}
         type="time"
         readOnly={readOnly}
-        className={`w-full min-w-0 px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-          error ? 'border-red-400' : 'border-slate-200'
-        } ${readOnly ? 'bg-slate-50 text-slate-500 cursor-default' : 'text-slate-900'}`}
+        className={inputClasses({ error: !!error, readOnly, extra: 'min-w-0' })}
         {...registration}
         {...props}
       />
@@ -188,9 +239,7 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
           <input
             id="reservation_date"
             type="date"
-            className={`w-full px-3 py-2 rounded-lg border text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
-              errors.reservation_date ? 'border-red-400' : 'border-slate-200'
-            }`}
+            className={inputClasses({ error: !!errors.reservation_date })}
             {...register('reservation_date', { required: 'Requerido' })}
           />
           {errors.reservation_date && <p className="text-xs text-red-600">{errors.reservation_date.message}</p>}
@@ -260,7 +309,7 @@ function ReservasSection({ state, dispatch }) {
         reservation_date: data.reservation_date,
         start_time: data.start_time,
       });
-      await refreshReservas(dispatch);
+      await refreshReservas(dispatch, state.reservas.length + 1);
       setModalOpen(false);
       showToast('Reserva creada exitosamente');
     } catch (err) {
@@ -271,7 +320,17 @@ function ReservasSection({ state, dispatch }) {
   const handleDelete = async (id) => {
     try {
       await deleteReserva(id);
-      dispatch({ type: 'SET_RESERVAS', payload: state.reservas.filter((r) => r.id !== id) });
+      dispatch({
+        type: 'SET_RESERVAS',
+        payload: {
+          reservas: state.reservas.filter((r) => r.id !== id),
+          total: Math.max(0, state.total - 1),
+          hasMore: state.hasMore,
+        },
+      });
+      // La racha se recalcula en el backend (aparte de la lista).
+      const { data } = await getStreak();
+      dispatch({ type: 'SET_STREAK', payload: data });
       showToast('Reserva eliminada');
     } catch (err) {
       showToast(err?.data?.message || 'Error al eliminar la reserva.', 'error');
@@ -295,55 +354,57 @@ function ReservasSection({ state, dispatch }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Mis reservas</h2>
           <button onClick={openAdd}
-            className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition cursor-pointer w-full sm:w-max">
-            + Nueva reserva
+            className={clsx("px-4 py-1.5 text-sm font-medium rounded-lg transition cursor-pointer w-full sm:w-max",
+            "bg-indigo-600 hover:bg-indigo-700 text-white")}>
+            Nueva reserva
           </button>
         </div>
-
 
         {state.reservas.length === 0 ? (
           <p className="text-sm text-slate-400 text-center py-8">No tienes reservas activas.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="pb-3 pr-6 text-xs font-medium text-slate-400 uppercase tracking-wide whitespace-nowrap">Gimnasio</th>
-                  <th className="pb-3 pr-6 text-xs font-medium text-slate-400 uppercase tracking-wide whitespace-nowrap">Fecha</th>
-                  <th className="pb-3 pr-6 text-xs font-medium text-slate-400 uppercase tracking-wide whitespace-nowrap">Horario</th>
-                  <th className="pb-3 pr-6 text-xs font-medium text-slate-400 uppercase tracking-wide whitespace-nowrap">Dirección</th>
-                  <th className="pb-3 text-xs font-medium text-slate-400 uppercase tracking-wide"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {state.reservas.map((r) => (
-                  <tr key={r.id}>
-                    <td className="py-3 pr-6">
-                      <p className="font-medium text-slate-800">{r.gimnasio?.idrd_id}</p>
-                      <p className="text-xs text-slate-400">{r.gimnasio?.park}</p>
-                    </td>
-                    <td className="py-3 pr-6 text-slate-600 whitespace-nowrap">{fmtDate(r.reservation_date)}</td>
-                    <td className="py-3 pr-6 whitespace-nowrap font-mono text-slate-600">
-                      {fmtTime(r.start_time)} – {fmtTime(r.end_time)}
-                    </td>
-                    <td className="py-3 pr-6 text-slate-500 text-xs">
-                      <p>{formatAddress(r.address)}</p>
-                      {(r.address?.city || r.address?.department) && (
-                        <p className="text-slate-400">{[r.address.city, r.address.department].filter(Boolean).join(', ')}</p>
-                      )}
-                    </td>
-                    <td className="py-3 text-right whitespace-nowrap">
-                      <button onClick={() => handleDelete(r.id)} title="Eliminar"
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer">
-                        <TrashIcon className="w-3.5 h-3.5" />
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-2">
+            {state.reservas.map(r => (
+              <div className="border border-slate-200 rounded-lg p-2 flex gap-2 items-center justify-between" key={r.id}>
+                <div className="flex gap-2 items-center">
+                  <div className="flex justify-center items-center size-10 rounded-md bg-indigo-50 text-indigo-600">
+                    <CalendarIcon className="size-6" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium text-slate-800">{r.gimnasio?.idrd_id}</span>
+                    <span className="text-xs text-slate-400">{r.gimnasio?.park}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <div className="flex flex-col items-end">
+                    <span className="font-medium text-slate-800">{fmtDate(r.reservation_date)}</span>
+                    <span className="text-xs text-slate-400">{fmtTime(r.start_time)} - {fmtTime(r.end_time)}</span>
+                  </div>
+                  <button onClick={() => handleDelete(r.id)}
+                    className={clsx("text-red-500 hover:text-red-700 transition cursor-pointer size-10 rounded-md", 
+                      "flex justify-center items-center bg-red-100")}>
+                    <TrashIcon className="size-5" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
+        )}
+
+        {state.hasMore && (
+          <button
+            onClick={() => loadMoreReservas(dispatch, state.reservas.length)}
+            disabled={state.loadingMore}
+            className="mx-auto text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:text-slate-400 transition cursor-pointer"
+          >
+            {state.loadingMore ? 'Cargando…' : 'Cargar más'}
+          </button>
+        )}
+
+        {state.total > 0 && (
+          <p className="text-center text-xs text-slate-400">
+            Mostrando {state.reservas.length} de {state.total}
+          </p>
         )}
       </div>
 
@@ -373,9 +434,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-slate-900 mt-1">{fullName(user)}</h1>
         <p className="text-slate-500 text-sm mt-2">Has iniciado sesión en el portal IRDR.</p>
       </div>
-
-      <StreakPanel reservas={state.reservas} loading={state.loading} />
-
+      <StreakPanel current={state.streak.current} longest={state.streak.longest} loading={state.loading} />
       <ReservasSection state={state} dispatch={dispatch} />
     </div>
   );

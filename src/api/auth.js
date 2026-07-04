@@ -39,8 +39,13 @@ export const setDefaultAddress = (id) =>
   api.patch(`/me/addresses/${id}/default`);
 
 // ── Reservas ──────────────────────────────────────────────────────────────────
-export const getReservas = () =>
-  api.get('/me/reservas');
+// params: { limit, offset } → devuelve { reservas, total, hasMore }
+export const getReservas = (params) =>
+  api.get('/me/reservas', { params });
+
+// Racha calculada en el backend → { current, longest }
+export const getStreak = () =>
+  api.get('/me/reservas/streak');
 
 export const createReserva = (data) =>
   api.post('/me/reservas', data);
