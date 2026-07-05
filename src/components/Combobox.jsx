@@ -28,7 +28,7 @@ export default function Combobox({
   const selected = options.find((o) => o.value === value) ?? null;
 
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col gap-1">
       {label && (
         <label className={`text-sm font-medium ${disabled ? 'text-slate-400' : 'text-slate-700'}`}>
           {label}
