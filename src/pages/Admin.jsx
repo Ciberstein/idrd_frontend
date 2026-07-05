@@ -3,8 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import Combobox from '../components/Combobox';
-import Input from '../components/Input';
-import { inputClasses } from '../components/Input';
+import Input, { inputClasses } from '../components/Input';
+import Button from '../components/Button';
 import { useToast } from '../context/ToastContext';
 import { getUsers, updateUser } from '../api/admin';
 import { getDocTypes } from '../api/auth';
@@ -140,14 +140,12 @@ function EditModal({ user, docTypes, open, onClose, onSaved }) {
             />
 
             <div className="flex items-center justify-between pt-1">
-              <button type="button" onClick={onClose}
-                className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
+              <Button variant="ghost" onClick={onClose}>
                 Cancelar
-              </button>
-              <button type="submit" disabled={isSubmitting}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer">
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
-              </button>
+              </Button>
             </div>
           </form>
         </DialogPanel>

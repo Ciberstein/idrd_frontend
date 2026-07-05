@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { requestRecovery, confirmRecovery } from '../api/auth';
 import Captcha from '../components/Captcha';
 import Input, { codeInputClasses } from '../components/Input';
+import Button from '../components/Button';
 
 // ── Step 1: request recovery code ─────────────────────────────────────────────
 function EmailStep({ onSuccess }) {
@@ -52,13 +53,13 @@ function EmailStep({ onSuccess }) {
         </p>
       )}
 
-      <button
+      <Button
         type="submit"
         disabled={isSubmitting || !isValid || !captchaToken}
-        className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
+        className="w-full"
       >
         {isSubmitting ? 'Enviando código…' : 'Enviar código'}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -144,20 +145,15 @@ function ResetStep({ accountId, email, onBack }) {
       )}
 
       <div className="flex items-center justify-between pt-1">
-        <button
-          type="button"
-          onClick={onBack}
-          className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer"
-        >
+        <Button variant="ghost" onClick={onBack}>
           ← Volver
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSubmitting || !isValid}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
         >
           {isSubmitting ? 'Guardando…' : 'Restablecer contraseña'}
-        </button>
+        </Button>
       </div>
     </form>
   );

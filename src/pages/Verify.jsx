@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { verifyCode } from '../api/auth';
 import { codeInputClasses } from '../components/Input';
+import Button from '../components/Button';
 
 export default function Verify() {
   const { state } = useLocation();
@@ -76,13 +77,13 @@ export default function Verify() {
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
+            className="w-full"
           >
             {isSubmitting ? 'Verificando…' : 'Verificar correo'}
-          </button>
+          </Button>
         </form>
 
         <p className="text-sm text-center text-slate-500">

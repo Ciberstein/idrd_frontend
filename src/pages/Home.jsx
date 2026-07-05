@@ -1,12 +1,13 @@
 import { useState, useEffect, useReducer } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { CalendarIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
 import StreakPanel from '../components/StreakPanel';
 import { inputClasses } from '../components/Input';
+import Button from '../components/Button';
 import clsx from 'clsx';
 import {
   getGimnasios,
@@ -16,12 +17,6 @@ import {
   createReserva,
   deleteReserva,
 } from '../api/auth';
-
-function fullName(user) {
-  return [user?.first_name, user?.middle_name, user?.last_name1, user?.last_name2]
-    .filter(Boolean)
-    .join(' ');
-}
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const PAGE_SIZE = 10;
@@ -157,7 +152,7 @@ function fmtTime(t) {
 
 function TimeField({ label, id, registration, error, readOnly, ...props }) {
   return (
-    <div className="space-y-1 min-w-0">
+    <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-slate-700" htmlFor={id}>{label}</label>
       <input
         id={id}
@@ -194,7 +189,7 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
   });
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-4 pt-2">
+    <form onSubmit={handleSubmit(onSave)} className="flex flex-col gap-4">
       <Controller
         name="gimnasio_id"
         control={control}
@@ -233,8 +228,8 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
         )}
       />
 
-      <div className="space-y-3">
-        <div className="space-y-1">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-slate-700" htmlFor="reservation_date">Fecha</label>
           <input
             id="reservation_date"
@@ -244,7 +239,7 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
           />
           {errors.reservation_date && <p className="text-xs text-red-600">{errors.reservation_date.message}</p>}
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <TimeField label="Hora inicio" id="start_time"
             registration={register('start_time', { required: 'Requerido' })}
             error={errors.start_time?.message}
@@ -258,15 +253,13 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-1">
-        <button type="button" onClick={onCancel}
-          className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
+      <div className="flex items-center justify-end gap-4">
+        <Button variant="ghost" onClick={onCancel}>
           Cancelar
-        </button>
-        <button type="submit" disabled={isSubmitting || !isValid}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer">
+        </Button>
+        <Button type="submit" disabled={isSubmitting || !isValid}>
           {isSubmitting ? 'Guardando…' : 'Reservar'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -277,12 +270,12 @@ function ReservaModal({ open, title, onClose, children }) {
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
+        <DialogPanel className="bg-white rounded-2xl shadow-xl w-full max-w-lg flex flex-col gap-4 p-4">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-base font-semibold text-slate-800">{title}</DialogTitle>
             <button onClick={onClose} aria-label="Cerrar"
               className="text-slate-400 hover:text-slate-600 transition cursor-pointer text-lg leading-none">
-              ✕
+              <XMarkIcon className="size-6" />
             </button>
           </div>
           {children}
@@ -342,7 +335,7 @@ function ReservasSection({ state, dispatch }) {
 
   if (state.loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 w-full">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full">
         <p className="text-sm text-slate-400 text-center py-8">Cargando…</p>
       </div>
     );
@@ -350,14 +343,12 @@ function ReservasSection({ state, dispatch }) {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Mis reservas</h2>
-          <button onClick={openAdd}
-            className={clsx("px-4 py-1.5 text-sm font-medium rounded-lg transition cursor-pointer w-full sm:w-max",
-            "bg-indigo-600 hover:bg-indigo-700 text-white")}>
+          <Button onClick={openAdd} className="w-full sm:w-max">
             Nueva reserva
-          </button>
+          </Button>
         </div>
 
         {state.reservas.length === 0 ? (
@@ -429,10 +420,9 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-        <p className="text-sm text-slate-500 font-medium">Bienvenido,</p>
-        <h1 className="text-3xl font-bold text-slate-900 mt-1">{fullName(user)}</h1>
-        <p className="text-slate-500 text-sm mt-2">Has iniciado sesión en el portal IRDR.</p>
+      <div className="flex flex-col bg-white rounded-xl border border-slate-200 p-4">
+        <p className="text-lg font-medium">Hola, {user?.first_name}</p>
+        <p className="text-slate-500 text-sm">Has iniciado sesión en el portal IRDR.</p>
       </div>
       <StreakPanel current={state.streak.current} longest={state.streak.longest} loading={state.loading} />
       <ReservasSection state={state} dispatch={dispatch} />

@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
 import Input, { inputClasses, codeInputClasses } from '../components/Input';
+import Button from '../components/Button';
 import { DEPARTMENTS, COLOMBIA } from '../data/colombia';
 import {
   updateProfile,
@@ -159,10 +160,9 @@ function GeneralSection() {
       />
 
       <div className="flex justify-end pt-2">
-        <button type="submit" disabled={isSubmitting || !isDirty || !isValid}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer w-full sm:w-max">
+        <Button type="submit" disabled={isSubmitting || !isDirty || !isValid} className="w-full sm:w-max">
           {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -242,14 +242,12 @@ function EmailSection() {
         />
 
 <div className="flex items-center justify-between pt-2">
-          <button type="button" onClick={goBack}
-            className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
+          <Button variant="ghost" onClick={goBack}>
             ← Volver
-          </button>
-          <button type="submit" disabled={sub2 || !isValid2}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer">
+          </Button>
+          <Button type="submit" disabled={sub2 || !isValid2}>
             {sub2 ? 'Verificando…' : 'Confirmar cambio'}
-          </button>
+          </Button>
         </div>
       </form>
     );
@@ -295,10 +293,9 @@ function EmailSection() {
 
 
       <div className="flex justify-end pt-2">
-        <button type="submit" disabled={sub1 || !isValid1}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer w-full sm:w-max">
+        <Button type="submit" disabled={sub1 || !isValid1} className="w-full sm:w-max">
           {sub1 ? 'Enviando código…' : 'Cambiar correo'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -366,15 +363,12 @@ function SecuritySection() {
         />
 
 <div className="flex items-center justify-between pt-2">
-          <button type="button"
-            onClick={() => setStep('form')}
-            className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
+          <Button variant="ghost" onClick={() => setStep('form')}>
             ← Volver
-          </button>
-          <button type="submit" disabled={sub2 || !isValid2}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer w-full sm:w-max">
+          </Button>
+          <Button type="submit" disabled={sub2 || !isValid2} className="w-full sm:w-max">
             {sub2 ? 'Verificando…' : 'Confirmar cambio'}
-          </button>
+          </Button>
         </div>
       </form>
     );
@@ -404,10 +398,9 @@ function SecuritySection() {
 
 
       <div className="flex justify-end pt-2">
-        <button type="submit" disabled={sub1 || !isValid1}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer w-full sm:w-max">
+        <Button type="submit" disabled={sub1 || !isValid1} className="w-full sm:w-max">
           {sub1 ? 'Enviando código…' : 'Cambiar contraseña'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -639,14 +632,12 @@ function AddressForm({ initial, onSave, onCancel }) {
       )}
 
       <div className="flex items-center justify-between pt-1">
-        <button type="button" onClick={onCancel}
-          className="text-sm text-slate-500 hover:text-slate-700 transition cursor-pointer">
+        <Button variant="ghost" onClick={onCancel}>
           Cancelar
-        </button>
-        <button type="submit" disabled={isSubmitting || !isValid}
-          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer">
+        </Button>
+        <Button type="submit" disabled={isSubmitting || !isValid}>
           {isSubmitting ? 'Guardando…' : initial ? 'Actualizar' : 'Agregar'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -855,7 +846,7 @@ export default function Settings() {
         <p className="text-sm text-slate-500">Administra tu información y seguridad</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-slate-200">
           {TABS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}

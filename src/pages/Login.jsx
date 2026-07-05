@@ -5,6 +5,7 @@ import { login } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 import Captcha from '../components/Captcha';
 import Input from '../components/Input';
+import Button from '../components/Button';
 
 export default function Login() {
   const { user, checking, signIn } = useAuth();
@@ -82,33 +83,37 @@ export default function Login() {
             {...register('password', { required: 'La contraseña es requerida' })}
           />
 
-          <Captcha key={captchaKey} onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+          <div className="border border-slate-200 rounded-lg flex justify-center items-center pt-2">
+            <Captcha key={captchaKey} onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+          </div>
 
           {errors.root && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3">{errors.root.message}</p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !isValid || !captchaToken}
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition cursor-pointer"
+            className="w-full"
           >
             {isSubmitting ? 'Iniciando sesión…' : 'Iniciar sesión'}
-          </button>
+          </Button>
 
           <div className="text-center">
             <Link to="/forgot-password" className="text-sm text-slate-500 hover:text-indigo-600 transition">
               ¿Olvidaste tu contraseña?
             </Link>
           </div>
+
+          <p className="text-sm text-center text-slate-500">
+            ¿No tienes cuenta?{' '}
+            <Link to="/register" className="text-indigo-600 font-medium hover:underline">
+              Regístrate
+            </Link>
+          </p>
+
         </form>
 
-        <p className="text-sm text-center text-slate-500">
-          ¿No tienes cuenta?{' '}
-          <Link to="/register" className="text-indigo-600 font-medium hover:underline">
-            Regístrate
-          </Link>
-        </p>
       </div>
     </div>
   );
