@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PencilSquareIcon, TrashIcon, StarIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, StarIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import Combobox from '../components/Combobox';
-import Input, { inputClasses, codeInputClasses } from '../components/Input';
+import Input, { codeInputClasses } from '../components/Input';
 import Button from '../components/Button';
 import { DEPARTMENTS, COLOMBIA } from '../data/colombia';
 import {
@@ -21,6 +21,7 @@ import {
   getDocTypes,
   getViaTypes,
 } from '../api/auth';
+import clsx from 'clsx';
 
 
 function CodeInput({ id, registration, error }) {
@@ -51,7 +52,7 @@ function Alert({ type, message }) {
 
 function SectionDivider({ title }) {
   return (
-    <div className="flex items-center gap-3 py-2">
+    <div className="flex items-center gap-3">
       <div className="flex-1 h-px bg-slate-200" />
       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide whitespace-nowrap">
         {title}
@@ -112,14 +113,14 @@ function GeneralSection() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input label="Primer nombre" id="first_name" error={errors.first_name?.message}
           {...register('first_name', { required: 'Requerido' })} />
         <Input label="Segundo nombre" id="middle_name" optional error={errors.middle_name?.message}
           {...register('middle_name')} />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input label="Primer apellido" id="last_name1" error={errors.last_name1?.message}
           {...register('last_name1', { required: 'Requerido' })} />
         <Input label="Segundo apellido" id="last_name2" optional error={errors.last_name2?.message}
@@ -133,7 +134,7 @@ function GeneralSection() {
           validate: (v) => new Date(v) < new Date() || 'Debe ser una fecha pasada',
         })}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Controller
           name="doc_type"
           control={control}
@@ -159,7 +160,7 @@ function GeneralSection() {
         {...register('phone')}
       />
 
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end">
         <Button type="submit" disabled={isSubmitting || !isDirty || !isValid} className="w-full sm:w-max">
           {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
         </Button>
@@ -241,7 +242,7 @@ function EmailSection() {
           error={err2.code?.message}
         />
 
-<div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={goBack}>
             ← Volver
           </Button>
@@ -254,7 +255,7 @@ function EmailSection() {
   }
 
   return (
-    <form onSubmit={handle1(onRequest)} className="space-y-4">
+    <form onSubmit={handle1(onRequest)} className="flex flex-col gap-4">
       <Input
         label="Correo actual"
         id="current_email"
@@ -290,9 +291,7 @@ function EmailSection() {
         })}
       />
 
-
-
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end">
         <Button type="submit" disabled={sub1 || !isValid1} className="w-full sm:w-max">
           {sub1 ? 'Enviando código…' : 'Cambiar correo'}
         </Button>
@@ -362,7 +361,7 @@ function SecuritySection() {
           error={err2.code?.message}
         />
 
-<div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={() => setStep('form')}>
             ← Volver
           </Button>
@@ -375,7 +374,7 @@ function SecuritySection() {
   }
 
   return (
-    <form onSubmit={handle1(onRequestChange)} className="space-y-4">
+    <form onSubmit={handle1(onRequestChange)} className="flex flex-col gap-4">
       <Input type="password" label="Contraseña actual" id="password" placeholder="••••••••"
         error={err1.password?.message}
         {...reg1('password', { required: 'La contraseña actual es requerida' })}
@@ -395,9 +394,7 @@ function SecuritySection() {
         })}
       />
 
-
-
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end">
         <Button type="submit" disabled={sub1 || !isValid1} className="w-full sm:w-max">
           {sub1 ? 'Enviando código…' : 'Cambiar contraseña'}
         </Button>
@@ -408,6 +405,10 @@ function SecuritySection() {
 
 // ── Addresses section ─────────────────────────────────────────────────────────
 const QUADRANTS = ['Norte', 'Sur', 'Este', 'Oeste'];
+const QUADRANT_OPTIONS = [
+  { value: '', label: 'Sin cuadrante' },
+  ...QUADRANTS.map((q) => ({ value: q, label: q })),
+];
 
 function formatAddress(addr) {
   const street = [
@@ -426,25 +427,6 @@ function formatAddress(addr) {
   return [street, location].filter(Boolean).join(', ');
 }
 
-function QuadrantSelect({ label, id, optional, error, ...props }) {
-  return (
-    <div className="space-y-1">
-      <label className="text-sm font-medium text-slate-700 flex gap-1" htmlFor={id}>
-        {label}
-        {optional && <span className="text-slate-400 font-normal">(opcional)</span>}
-      </label>
-      <select
-        id={id}
-        className={inputClasses({ error: !!error, extra: 'bg-white cursor-pointer' })}
-        {...props}
-      >
-        <option value="">Sin cuadrante</option>
-        {QUADRANTS.map((q) => <option key={q} value={q}>{q}</option>)}
-      </select>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
 
 function AddressForm({ initial, onSave, onCancel }) {
   const [viaTypes, setViaTypes] = useState([]);
@@ -515,7 +497,7 @@ function AddressForm({ initial, onSave, onCancel }) {
   const previewLocation = [watched.city, watched.department].filter(Boolean).join(', ');
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-4 pt-2">
+    <form onSubmit={handleSubmit(onSave)} className="flex flex-col gap-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Controller
           name="department"
@@ -552,7 +534,7 @@ function AddressForm({ initial, onSave, onCancel }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Controller
           name="via_type"
           control={control}
@@ -574,10 +556,20 @@ function AddressForm({ initial, onSave, onCancel }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <QuadrantSelect label="Cuadrante vía" id="via_quadrant" optional
-          error={errors.via_quadrant?.message}
-          {...register('via_quadrant')}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Controller
+          name="via_quadrant"
+          control={control}
+          render={({ field }) => (
+            <Combobox
+              label="Cuadrante vía"
+              options={QUADRANT_OPTIONS}
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              error={errors.via_quadrant?.message}
+              placeholder="Sin cuadrante"
+            />
+          )}
         />
         <div className="flex items-end pb-2">
           <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer select-none">
@@ -589,18 +581,28 @@ function AddressForm({ initial, onSave, onCancel }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input label="Número cruce" id="cross_number" placeholder="22D"
           error={errors.cross_number?.message}
           {...register('cross_number', { required: 'Requerido' })}
         />
-        <QuadrantSelect label="Cuadrante cruce" id="cross_quadrant" optional
-          error={errors.cross_quadrant?.message}
-          {...register('cross_quadrant')}
+        <Controller
+          name="cross_quadrant"
+          control={control}
+          render={({ field }) => (
+            <Combobox
+              label="Cuadrante cruce"
+              options={QUADRANT_OPTIONS}
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              error={errors.cross_quadrant?.message}
+              placeholder="Sin cuadrante"
+            />
+          )}
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input label="Placa" id="plate" placeholder="50"
           error={errors.plate?.message}
           {...register('plate', { required: 'Requerido' })}
@@ -631,7 +633,7 @@ function AddressForm({ initial, onSave, onCancel }) {
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex items-center justify-end gap-4">
         <Button variant="ghost" onClick={onCancel}>
           Cancelar
         </Button>
@@ -822,8 +824,12 @@ function AddressesSection() {
         ))
       )}
       <button onClick={openAdd}
-        className="w-full py-2 px-4 border-2 border-dashed border-slate-300 hover:border-indigo-400 text-slate-500 hover:text-indigo-600 text-sm font-medium rounded-xl transition cursor-pointer">
-        + Agregar dirección
+        className={clsx("w-full py-2 px-4 text-sm font-medium rounded-xl transition cursor-pointer",
+          "hover:border-indigo-400 text-slate-500 hover:text-indigo-600",
+          "border border-dashed border-slate-300 min-h-30",
+          "flex items-center justify-center gap-2")}>
+        <MapPinIcon className="size-5" />
+        <span>Agregar dirección</span>
       </button>
     </div>
   );
@@ -862,11 +868,11 @@ export default function Settings() {
 
         <div className="p-6 space-y-6">
           {activeTab === 'general' && (
-            <>
+            <div className="flex flex-col gap-6">
               <GeneralSection />
               <SectionDivider title="Correo electrónico" />
               <EmailSection />
-            </>
+            </div>
           )}
           {activeTab === 'security' && <SecuritySection />}
           {activeTab === 'addresses' && <AddressesSection />}

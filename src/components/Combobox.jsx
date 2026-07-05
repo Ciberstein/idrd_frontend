@@ -64,13 +64,13 @@ export default function Combobox({
         </div>
         <ComboboxOptions
           anchor="bottom"
-          className="w-(--input-width) max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-white py-1 shadow-lg z-50 focus:outline-none empty:hidden mt-1"
+          className="w-(--input-width) max-h-56 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-50 focus:outline-none empty:hidden mt-1"
         >
           {filtered.map((opt) => (
             <ComboboxOption
               key={String(opt.value)}
               value={opt}
-              className="group px-4 py-2 cursor-pointer select-none data-focus:bg-indigo-50"
+              className="group px-4 py-2 cursor-pointer select-none data-focus:bg-indigo-50 rounded-lg"
             >
               <p className="text-sm text-slate-700 group-data-selected:font-semibold group-data-selected:text-indigo-600">
                 {opt.label}

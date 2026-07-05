@@ -201,7 +201,6 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
             value={field.value}
             onChange={field.onChange}
             error={errors.gimnasio_id?.message}
-            searchable
             placeholder="Buscar gimnasio…"
           />
         )}
