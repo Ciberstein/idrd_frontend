@@ -6,7 +6,7 @@ const ToastContext = createContext(null);
 
 let _nextId = 0;
 
-function ToastItem({ toast, onDismiss }) {
+const ToastItem = ({ toast, onDismiss }) => {
   const isSuccess = toast.type === 'success';
   return (
     <div className={`flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium w-[calc(100vw-2rem)] sm:w-auto sm:min-w-72 max-w-sm pointer-events-auto animate-toast-in ${
@@ -29,7 +29,7 @@ function ToastItem({ toast, onDismiss }) {
   );
 }
 
-export function ToastProvider({ children }) {
+export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
   const dismiss = useCallback((id) => {
@@ -57,6 +57,6 @@ export function ToastProvider({ children }) {
   );
 }
 
-export function useToast() {
+export const useToast = () => {
   return useContext(ToastContext);
 }

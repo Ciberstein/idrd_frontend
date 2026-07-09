@@ -4,7 +4,7 @@ import { verifyCode } from '../api/auth';
 import { codeInputClasses } from '../components/Input';
 import Button from '../components/Button';
 
-export default function Verify() {
+const Verify = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -95,3 +95,5 @@ export default function Verify() {
     </div>
   );
 }
+
+export default Verify;

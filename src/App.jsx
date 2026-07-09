@@ -13,7 +13,7 @@ import Settings from './pages/Settings';
 import ForgotPassword from './pages/ForgotPassword';
 import Admin from './pages/Admin';
 
-export default function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -43,3 +43,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+export default App;

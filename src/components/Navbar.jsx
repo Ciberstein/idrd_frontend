@@ -7,7 +7,7 @@ function fullName(user) {
   return [user?.first_name, user?.last_name1].filter(Boolean).join(' ');
 }
 
-export default function Navbar() {
+const Navbar = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 px-6 py-3 w-full">
+    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 p-3 w-full">
       <div className="max-w-4xl mx-auto flex items-center justify-between">
         <Link to="/home" className="text-2xl font-bold text-indigo-600 tracking-tight">
           IRDR
@@ -98,3 +98,5 @@ export default function Navbar() {
     </header>
   );
 }
+
+export default Navbar;

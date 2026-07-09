@@ -24,7 +24,7 @@ import {
 import clsx from 'clsx';
 
 
-function CodeInput({ id, registration, error }) {
+const CodeInput = ({ id, registration, error }) => {
   return (
     <div className="space-y-1">
       <label className="text-sm font-medium text-slate-700" htmlFor={id}>
@@ -44,13 +44,13 @@ function CodeInput({ id, registration, error }) {
   );
 }
 
-function Alert({ type, message }) {
+const Alert = ({ type, message }) => {
   if (!message) return null;
   const cls = type === 'error' ? 'text-red-600 bg-red-50' : 'text-emerald-600 bg-emerald-50';
   return <p className={`text-sm rounded-lg px-4 py-3 ${cls}`}>{message}</p>;
 }
 
-function SectionDivider({ title }) {
+const SectionDivider = ({ title }) => {
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 h-px bg-slate-200" />
@@ -63,7 +63,7 @@ function SectionDivider({ title }) {
 }
 
 // ── General info section ──────────────────────────────────────────────────────
-function GeneralSection() {
+const GeneralSection = () => {
   const { user, updateUser } = useAuth();
   const showToast = useToast();
   const [docTypes, setDocTypes] = useState([]);
@@ -170,7 +170,7 @@ function GeneralSection() {
 }
 
 // ── Email change section ──────────────────────────────────────────────────────
-function EmailSection() {
+const EmailSection = () => {
   const { user, updateUser } = useAuth();
   const showToast = useToast();
   const [step, setStep] = useState('form');
@@ -301,7 +301,7 @@ function EmailSection() {
 }
 
 // ── Security section ──────────────────────────────────────────────────────────
-function SecuritySection() {
+const SecuritySection = () => {
   const { user } = useAuth();
   const showToast = useToast();
   const [step, setStep] = useState('form');
@@ -428,7 +428,7 @@ function formatAddress(addr) {
 }
 
 
-function AddressForm({ initial, onSave, onCancel }) {
+const AddressForm = ({ initial, onSave, onCancel }) => {
   const [viaTypes, setViaTypes] = useState([]);
 
   useEffect(() => {
@@ -645,7 +645,7 @@ function AddressForm({ initial, onSave, onCancel }) {
   );
 }
 
-function AddressCard({ address, onEdit, onDelete, onSetDefault }) {
+const AddressCard = ({ address, onEdit, onDelete, onSetDefault }) => {
   const [deleting, setDeleting] = useState(false);
   const [settingDefault, setSettingDefault] = useState(false);
 
@@ -721,7 +721,7 @@ function AddressCard({ address, onEdit, onDelete, onSetDefault }) {
   );
 }
 
-function AddressesSection() {
+const AddressesSection = () => {
   const showToast = useToast();
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -842,7 +842,7 @@ const TABS = [
   { id: 'security', label: 'Seguridad' },
 ];
 
-export default function Settings() {
+const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
 
   return (
@@ -881,3 +881,5 @@ export default function Settings() {
     </div>
   );
 }
+
+export default Settings;

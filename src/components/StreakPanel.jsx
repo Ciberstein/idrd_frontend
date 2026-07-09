@@ -1,6 +1,6 @@
 import { FireIcon, TrophyIcon } from '@heroicons/react/24/outline';
 
-function StatCard({ icon: Icon, label, value, tone }) {
+const StatCard = ({ icon: Icon, label, value, tone }) => {
   const tones = {
     indigo: 'bg-indigo-50 text-indigo-600',
     amber: 'bg-amber-50 text-amber-600',
@@ -23,11 +23,13 @@ function StatCard({ icon: Icon, label, value, tone }) {
   );
 }
 
-export default function StreakPanel({ current = 0, longest = 0, loading }) {
+const StreakPanel = ({ current = 0, longest = 0, loading }) => {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 z-10">
       <StatCard icon={FireIcon} label="Racha actual" value={current} tone="indigo" />
       <StatCard icon={TrophyIcon} label="Racha máxima" value={longest} tone="amber" />
     </div>
   );
 }
+
+export default StreakPanel;

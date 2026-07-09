@@ -7,7 +7,7 @@ import Input, { codeInputClasses } from '../components/Input';
 import Button from '../components/Button';
 
 // ── Step 1: request recovery code ─────────────────────────────────────────────
-function EmailStep({ onSuccess }) {
+const EmailStep = ({ onSuccess }) => {
   const [captchaToken, setCaptchaToken] = useState('');
   const [captchaKey, setCaptchaKey] = useState(0);
 
@@ -65,7 +65,7 @@ function EmailStep({ onSuccess }) {
 }
 
 // ── Step 2: enter code + new password ────────────────────────────────────────
-function ResetStep({ accountId, email, onBack }) {
+const ResetStep = ({ accountId, email, onBack }) => {
   const navigate = useNavigate();
 
   const {
@@ -160,7 +160,7 @@ function ResetStep({ accountId, email, onBack }) {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default function ForgotPassword() {
+const ForgotPassword = () => {
   const [step, setStep] = useState('email');
   const [account, setAccount] = useState(null);
 
@@ -207,3 +207,5 @@ export default function ForgotPassword() {
     </div>
   );
 }
+
+export default ForgotPassword;

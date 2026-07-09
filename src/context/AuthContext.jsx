@@ -32,7 +32,7 @@ function getStoredSession() {
   }
 }
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(getStoredSession);
   const [checking, setChecking] = useState(true);
 

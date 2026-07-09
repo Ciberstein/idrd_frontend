@@ -31,7 +31,7 @@ function fmtDate(d) {
   return new Date(d).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-function EditModal({ user, docTypes, open, onClose, onSaved }) {
+const EditModal = ({ user, docTypes, open, onClose, onSaved }) => {
   const showToast = useToast();
   const {
     register, handleSubmit, control, reset,
@@ -154,7 +154,7 @@ function EditModal({ user, docTypes, open, onClose, onSaved }) {
   );
 }
 
-export default function Admin() {
+const Admin = () => {
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -280,3 +280,5 @@ export default function Admin() {
     </div>
   );
 }
+
+export default Admin;

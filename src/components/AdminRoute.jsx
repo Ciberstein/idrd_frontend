@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function AdminRoute({ children }) {
+const AdminRoute = ({ children }) => {
   const { user, checking } = useAuth();
 
   if (checking) {
@@ -16,3 +16,5 @@ export default function AdminRoute({ children }) {
   if (user.authority !== 100) return <Navigate to="/home" replace />;
   return children;
 }
+
+export default AdminRoute;

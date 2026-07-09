@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 
 // Layout compartido para las páginas de administración.
 // Mismo patrón que UserLayout, con un contenedor más ancho para las tablas.
-export default function AdminLayout() {
+const AdminLayout = () => {
   return (
     <div className="min-h-screen flex flex-col gap-4 bg-slate-50">
       <Navbar />
@@ -13,3 +13,5 @@ export default function AdminLayout() {
     </div>
   );
 }
+
+export default AdminLayout;

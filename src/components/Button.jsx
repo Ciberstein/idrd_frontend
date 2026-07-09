@@ -18,12 +18,14 @@ const VARIANTS = {
   ghost: 'text-sm text-slate-500 hover:text-slate-700',
 };
 
-export function buttonClasses({ variant = 'primary', className = '' } = {}) {
+export const buttonClasses = ({ variant = 'primary', className = '' } = {}) => {
   return [BASE, VARIANTS[variant] ?? VARIANTS.primary, className].filter(Boolean).join(' ');
 }
 
 // Props: variant ('primary' | 'danger' | 'ghost'), className (extra), type
 // (por defecto 'button'), y cualquier prop nativa del <button> (onClick, disabled…).
-export default function Button({ variant = 'primary', className = '', type = 'button', ...props }) {
+const Button = ({ variant = 'primary', className = '', type = 'button', ...props }) => {
   return <button type={type} className={buttonClasses({ variant, className })} {...props} />;
 }
+
+export default Button;

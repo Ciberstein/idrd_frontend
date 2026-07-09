@@ -9,7 +9,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 
 
-export default function Register() {
+const Register = () => {
   const { user, checking } = useAuth();
   const navigate = useNavigate();
   const [docTypes, setDocTypes] = useState([]);
@@ -180,3 +180,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default Register;

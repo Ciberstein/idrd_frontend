@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { CalendarIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -58,7 +58,7 @@ function reducer(state, action) {
     default:
       return state;
   }
-}
+};
 
 // ── Thunks ────────────────────────────────────────────────────────────────────
 async function loadAll(dispatch) {
@@ -83,7 +83,7 @@ async function loadAll(dispatch) {
   } catch {
     dispatch({ type: 'SET_ERROR', payload: 'Error al cargar los datos.' });
   }
-}
+};
 
 async function loadMoreReservas(dispatch, offset) {
   dispatch({ type: 'LOADING_MORE' });
@@ -96,7 +96,7 @@ async function loadMoreReservas(dispatch, offset) {
   } catch {
     dispatch({ type: 'LOADING_MORE_DONE' });
   }
-}
+};
 
 // Tras crear/eliminar: recarga las reservas ya visibles y la racha (aparte).
 async function refreshReservas(dispatch, loadedCount) {
@@ -116,7 +116,7 @@ async function refreshReservas(dispatch, loadedCount) {
     });
     dispatch({ type: 'SET_STREAK', payload: streakRes.data });
   } catch { /* silent */ }
-}
+};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatAddress(addr) {
@@ -133,24 +133,24 @@ function formatAddress(addr) {
     addr.plate,
     addr.complement || null,
   ].filter(Boolean).join(' ');
-}
+};
 
 function fmtDate(d, config = {
   day: '2-digit', month: 'short', timeZone: 'America/Bogota'
 }) {
   if (!d) return '—';
   return new Date(d + 'T00:00:00').toLocaleDateString('es-CO', config);
-}
+};
 
 function fmtTime(t) {
   if (!t) return '—';
   const [h, m] = t.split(':');
   return `${h}:${m}`;
-}
+};
 
 // ── Components ────────────────────────────────────────────────────────────────
 
-function TimeField({ label, id, registration, error, readOnly, ...props }) {
+const TimeField = ({ label, id, registration, error, readOnly, ...props }) => {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-slate-700" htmlFor={id}>{label}</label>
@@ -165,16 +165,15 @@ function TimeField({ label, id, registration, error, readOnly, ...props }) {
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
-}
-
+};
 
 function addOneHour(time) {
   if (!time) return '';
   const [h] = time.split(':');
   return `${String((parseInt(h, 10) + 1) % 24).padStart(2, '0')}:00`;
-}
+};
 
-function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
+const ReservaForm = ({ gimnasioOptions, userAddresses, onSave, onCancel }) => {
   const {
     register, handleSubmit, control, getValues, watch,
     formState: { errors, isSubmitting, isValid },
@@ -262,9 +261,9 @@ function ReservaForm({ gimnasioOptions, userAddresses, onSave, onCancel }) {
       </div>
     </form>
   );
-}
+};
 
-function ReservaModal({ open, title, onClose, children }) {
+const ReservaModal = ({ open, title, onClose, children }) => {
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
@@ -282,9 +281,9 @@ function ReservaModal({ open, title, onClose, children }) {
       </div>
     </Dialog>
   );
-}
+};
 
-function ReservasSection({ state, dispatch }) {
+const ReservasSection = ({ state, dispatch }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const showToast = useToast();
 
@@ -334,15 +333,15 @@ function ReservasSection({ state, dispatch }) {
 
   if (state.loading) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full z-10">
         <p className="text-sm text-slate-400 text-center py-8">Cargando…</p>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4">
+    <React.Fragment>
+      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4 z-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Mis reservas</h2>
           <Button onClick={openAdd} className="w-full sm:w-max">
@@ -397,7 +396,6 @@ function ReservasSection({ state, dispatch }) {
           </p>
         )}
       </div>
-
       <ReservaModal open={modalOpen} title="Nueva reserva" onClose={closeModal}>
         <ReservaForm
           gimnasioOptions={gimnasioOptions}
@@ -406,12 +404,12 @@ function ReservasSection({ state, dispatch }) {
           onCancel={closeModal}
         />
       </ReservaModal>
-    </>
+    </React.Fragment>
   );
-}
+};
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default function Home() {
+const Home = () => {
   const { user } = useAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -419,12 +417,27 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col bg-white rounded-xl border border-slate-200 p-4">
-        <p className="text-lg font-medium">Hola, {user?.first_name}</p>
-        <p className="text-slate-500 text-sm">Has iniciado sesión en el portal IRDR.</p>
+      <div className={clsx("flex lg:hidden size-full absolute top-0 left-0", 
+        "bg-linear-to-r from-slate-100 to-slate-300 pt-20 backdrop-blur-lg"
+      )}>
+        <div className="size-full bg-white rounded-t-3xl"></div>
       </div>
-      <StreakPanel current={state.streak.current} longest={state.streak.longest} loading={state.loading} />
+      <div className="flex flex-col lg:bg-white lg:rounded-xl lg:border lg:border-slate-200 pb-5 lg:p-4 z-10">
+        <p className="text-lg font-medium">
+          Hola, {user?.first_name}
+        </p>
+        <p className="text-slate-500 text-sm">
+          Has iniciado sesión en el portal IRDR.
+        </p>
+      </div>
+      <StreakPanel
+        current={state.streak.current}
+        longest={state.streak.longest}
+        loading={state.loading}
+      />
       <ReservasSection state={state} dispatch={dispatch} />
     </div>
   );
-}
+};
+
+export default Home;

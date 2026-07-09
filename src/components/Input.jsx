@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 // Estilos base compartidos por los inputs estándar.
-export function inputClasses({ error = false, readOnly = false, extra = '' } = {}) {
+export const inputClasses = ({ error = false, readOnly = false, extra = '' } = {}) => {
   return [
     'w-full px-3 py-2 rounded-lg border text-slate-900 placeholder-slate-400 text-sm',
     'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition',
@@ -22,7 +22,7 @@ export function inputClasses({ error = false, readOnly = false, extra = '' } = {
 }
 
 // Variante para inputs de código/OTP (grande, centrado, monoespaciado).
-export function codeInputClasses({ error = false } = {}) {
+export const codeInputClasses = ({ error = false } = {}) => {
   return [
     'w-full px-3 py-3 rounded-lg border text-slate-900 placeholder-slate-400',
     'text-center text-xl tracking-widest font-mono',
@@ -41,7 +41,7 @@ export const errorClass = 'text-xs text-red-600';
 // Con type="password" añade automáticamente el botón de mostrar/ocultar.
 // Props: label, id, optional, error (string), className (extra), y cualquier
 // prop nativa del <input> (type, placeholder, value, readOnly, register…).
-export default function Input({ label, id, optional, error, className = '', type = 'text', ...props }) {
+const Input = ({ label, id, optional, error, className = '', type = 'text', ...props }) => {
   const [show, setShow] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword && show ? 'text' : type;
@@ -88,3 +88,5 @@ export default function Input({ label, id, optional, error, className = '', type
     </div>
   );
 }
+
+export default Input;

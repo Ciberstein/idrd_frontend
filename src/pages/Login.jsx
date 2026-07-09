@@ -7,7 +7,7 @@ import Captcha from '../components/Captcha';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-export default function Login() {
+const Login = () => {
   const { user, checking, signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -118,3 +118,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;

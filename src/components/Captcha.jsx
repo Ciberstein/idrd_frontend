@@ -2,7 +2,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 
 // Para pedir un token nuevo (es de un solo uso), remonta este componente
 // cambiando su prop `key` desde el form.
-export default function Captcha({ onVerify, onExpire }) {
+const Captcha = ({ onVerify, onExpire }) => {
   return (
     <Turnstile
       siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
@@ -12,3 +12,5 @@ export default function Captcha({ onVerify, onExpire }) {
     />
   );
 }
+
+export default Captcha;

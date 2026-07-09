@@ -8,7 +8,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-export default function Combobox({
+const Combobox = ({
   label,
   options = [],
   value,
@@ -18,7 +18,7 @@ export default function Combobox({
   disabled = false,
   placeholder = 'Selecciona una opción',
   emptyValue = '',
-}) {
+}) => {
   const [query, setQuery] = useState('');
 
   const filtered = searchable && query.trim()
@@ -89,3 +89,5 @@ export default function Combobox({
     </div>
   );
 }
+
+export default Combobox;
