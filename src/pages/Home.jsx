@@ -333,7 +333,7 @@ const ReservasSection = ({ state, dispatch }) => {
 
   if (state.loading) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full z-10">
+      <div className="bg-white rounded-3xl lg:rounded-xl border border-slate-200 p-4 w-full z-10">
         <p className="text-sm text-slate-400 text-center py-8">Cargando…</p>
       </div>
     );
@@ -341,7 +341,7 @@ const ReservasSection = ({ state, dispatch }) => {
 
   return (
     <React.Fragment>
-      <div className="bg-white rounded-xl border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4 z-10">
+      <div className="bg-white rounded-3xl lg:rounded-xl border border-slate-200 p-4 w-full flex flex-1 flex-col gap-4 z-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Mis reservas</h2>
           <Button onClick={openAdd} className="w-full sm:w-max">
@@ -356,7 +356,7 @@ const ReservasSection = ({ state, dispatch }) => {
             {state.reservas.map(r => (
               <div className="border border-slate-200 rounded-lg p-2 flex gap-2 items-center justify-between" key={r.id}>
                 <div className="flex gap-2 items-center">
-                  <div className="flex justify-center items-center size-10 rounded-md bg-indigo-50 text-indigo-600">
+                  <div className="flex justify-center items-center size-10 rounded-xl lg:rounded-lg bg-indigo-50 text-indigo-600">
                     <CalendarIcon className="size-6" />
                   </div>
                   <div className="flex flex-col">
@@ -370,7 +370,7 @@ const ReservasSection = ({ state, dispatch }) => {
                     <span className="text-xs text-slate-400">{fmtTime(r.start_time)} - {fmtTime(r.end_time)}</span>
                   </div>
                   <button onClick={() => handleDelete(r.id)}
-                    className={clsx("text-red-500 hover:text-red-700 transition cursor-pointer size-10 rounded-md", 
+                    className={clsx("text-red-500 hover:text-red-700 transition cursor-pointer size-10 rounded-xl lg:rounded-lg", 
                       "flex justify-center items-center bg-red-100")}>
                     <TrashIcon className="size-5" />
                   </button>
@@ -420,7 +420,7 @@ const Home = () => {
       <div className={clsx("flex lg:hidden size-full absolute top-0 left-0", 
         "bg-linear-to-r from-slate-50 to-indigo-100 pt-20 backdrop-blur-lg"
       )}>
-        <div className={clsx("size-full rounded-t-3xl", 
+        <div className={clsx("size-full rounded-t-4xl", 
           "bg-linear-to-br from-white to-slate-100")}></div>
       </div>
       <div className={clsx("flex flex-col lg:bg-white lg:rounded-xl", 

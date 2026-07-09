@@ -6,8 +6,8 @@ const StatCard = ({ icon: Icon, label, value, tone }) => {
     amber: 'bg-amber-50 text-amber-600',
   };
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4">
-      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${tones[tone]}`}>
+    <div className="flex items-center gap-3 rounded-3xl lg:rounded-xl border border-slate-200 bg-white p-4">
+      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl lg:rounded-lg ${tones[tone]}`}>
         <Icon className="size-6" />
       </div>
       <div className="min-w-0">
