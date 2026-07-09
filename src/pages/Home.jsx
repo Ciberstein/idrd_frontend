@@ -354,7 +354,7 @@ const ReservasSection = ({ state, dispatch }) => {
         ) : (
           <div className="flex flex-col gap-2">
             {state.reservas.map(r => (
-              <div className="border border-slate-200 rounded-lg p-2 flex gap-2 items-center justify-between" key={r.id}>
+              <div className="border border-slate-200 rounded-2xl lg:rounded-lg p-2 flex gap-2 items-center justify-between" key={r.id}>
                 <div className="flex gap-2 items-center">
                   <div className="flex justify-center items-center size-10 rounded-xl lg:rounded-lg bg-indigo-50 text-indigo-600">
                     <CalendarIcon className="size-6" />

@@ -43,7 +43,7 @@ const Combobox = ({
         <div className="relative">
           <ComboboxInput
             readOnly={!searchable}
-            className={`w-full px-3 py-2 pr-8 rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
+            className={`w-full px-3 py-2 pr-8 rounded-xl lg:rounded-lg border text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${
               !searchable ? 'cursor-pointer' : ''
             } ${disabled ? 'bg-slate-50 text-slate-400 cursor-not-allowed' : ''} ${
               error ? 'border-red-400' : 'border-slate-200'

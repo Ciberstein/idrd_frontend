@@ -5,15 +5,15 @@
 // mismo archivo); eso solo afecta el Fast Refresh en dev, no el build.
 /* eslint-disable react-refresh/only-export-components */
 
-const BASE = 'transition cursor-pointer';
+const BASE = 'transition cursor-pointer rounded-xl lg:rounded-lg px-3 py-2';
 
 const VARIANTS = {
   // Acción principal (submit / confirmar).
   primary:
-    'rounded-lg px-4 py-2 text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed',
+    'text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed',
   // Peligro (eliminar).
   danger:
-    'inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50',
+    'inline-flex items-center justify-center gap-1.5 text-sm font-medium bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-50',
   // Texto plano (cancelar / volver).
   ghost: 'text-sm text-slate-500 hover:text-slate-700',
 };

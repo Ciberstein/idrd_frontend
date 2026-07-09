@@ -26,7 +26,8 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 p-3 w-full">
       <div className="max-w-4xl mx-auto flex items-center justify-between">
-        <Link to="/home" className="text-2xl font-bold text-indigo-600 tracking-tight">
+        <Link to="/home" className="text-3xl font-bold text-indigo-600 tracking-tight flex items-center gap-2">
+          <img src="/favicon.svg" alt="Logo" className="size-8" />
           IRDR
         </Link>
 
