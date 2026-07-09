@@ -418,15 +418,17 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className={clsx("flex lg:hidden size-full absolute top-0 left-0", 
-        "bg-linear-to-r from-slate-100 to-slate-300 pt-20 backdrop-blur-lg"
+        "bg-linear-to-r from-slate-50 to-indigo-100 pt-20 backdrop-blur-lg"
       )}>
-        <div className="size-full bg-white rounded-t-3xl"></div>
+        <div className={clsx("size-full rounded-t-3xl", 
+          "bg-linear-to-br from-white to-slate-100")}></div>
       </div>
-      <div className="flex flex-col lg:bg-white lg:rounded-xl lg:border lg:border-slate-200 pb-5 lg:p-4 z-10">
+      <div className={clsx("flex flex-col lg:bg-white lg:rounded-xl", 
+          "lg:border lg:border-slate-200 pb-5 lg:p-4 z-10")}>
         <p className="text-lg font-medium">
           Hola, {user?.first_name}
         </p>
-        <p className="text-slate-500 text-sm">
+        <p className="text-gray-400 text-sm">
           Has iniciado sesión en el portal IRDR.
         </p>
       </div>
